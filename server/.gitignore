@@ -16,4 +16,6 @@ web-build/
 .metro-health-check*
 
 .env
+*.env
+**/.env
 
