@@ -1,15 +1,10 @@
 import { DataTypes, Optional } from "sequelize";
-import { Table, Column, Model } from "sequelize-typescript";
+import { Table, Column, Model, HasMany } from "sequelize-typescript";
+import { Exercise } from "./exercise.model";
 
-interface MachineTypeAttributes {
-    id: number;
-    name: string;
-}
-
-interface MachineTypeCreationAttributes extends Optional<MachineTypeAttributes, "id"> { }
 
 @Table({ tableName: "machine_types", timestamps:false })
-export class MachineType extends Model<MachineTypeAttributes, MachineTypeCreationAttributes> {
+export class MachineType extends Model{
     @Column({
         primaryKey: true,
         type: DataTypes.INTEGER,
@@ -23,4 +18,8 @@ export class MachineType extends Model<MachineTypeAttributes, MachineTypeCreatio
         allowNull: false,
     })
     name: string
+
+    //Associations 
+    @HasMany(() => Exercise)
+    exercise: Exercise;
 };

@@ -1,15 +1,10 @@
 import { DataTypes, Optional } from "sequelize";
-import { Table, Column, Model } from "sequelize-typescript";
+import { Table, Column, Model, HasMany } from "sequelize-typescript";
+import { Exercise } from "./exercise.model";
 
-interface ExerciseTypeAttributes {
-    id: number;
-    name: string;
-}
-
-interface ExerciseTypeCreationAttributes extends Optional<ExerciseTypeAttributes, "id"> { }
 
 @Table({ tableName: "exercise_types", timestamps: false })
-export class ExerciseType extends Model<ExerciseTypeAttributes, ExerciseTypeCreationAttributes> {
+export class ExerciseType extends Model {
     @Column({
         primaryKey: true,
         type: DataTypes.INTEGER,
@@ -23,4 +18,8 @@ export class ExerciseType extends Model<ExerciseTypeAttributes, ExerciseTypeCrea
         allowNull: false,
     })
     name: string
+
+    //Associations 
+    @HasMany(() => Exercise)
+    exercise: Exercise;
 };

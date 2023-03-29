@@ -13,7 +13,6 @@ const sequelize = new Sequelize({
     port: Number(process.env.DB_PORT),
     models: [__dirname + "/**/*.model.ts"],
     modelMatch: (filename, member) => {
-        console.log(filename.substring(0, filename.indexOf('.model')), member.toLowerCase());
         return filename.substring(0, filename.indexOf('.model')) === member.toLowerCase();
     },
     pool: {

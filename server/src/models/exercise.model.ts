@@ -3,19 +3,9 @@ import { BelongsTo, Column, Default, ForeignKey, Model, Table } from "sequelize-
 import { ExerciseType } from "./exercisetype.model";
 import { MachineType } from "./machinetype.model";
 
-interface ExerciseAttributes { 
-    id: bigint; 
-    name: string; 
-    description: string;
-    machineTypeId: number;
-    exerciseTypeId: number;
-    default: boolean;
-}
 
-interface ExerciseCreationAttributes extends Optional<ExerciseAttributes, "id">{}
-
-@Table({tableName: "exercises"})
-export class Exercise extends Model<ExerciseAttributes, ExerciseCreationAttributes> {
+@Table({ tableName: "exercises" })
+export class Exercise extends Model {
     @Column({
         primaryKey: true,
         type: DataTypes.BIGINT,
@@ -55,5 +45,4 @@ export class Exercise extends Model<ExerciseAttributes, ExerciseCreationAttribut
 
     @BelongsTo(() => MachineType)
     machineType: MachineType
-
 }
