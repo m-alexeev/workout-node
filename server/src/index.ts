@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
+import { sequelize } from "./models";
 
 dotenv.config();
 
@@ -13,8 +14,10 @@ const PORT = process.env.SERVER_PORT || 8000;
 
 const start = async (): Promise<void> => {
     try{
-        app.listen(PORT, () => {
-            console.log(`Server is running on http://localhost:${PORT}`);
+        sequelize.sync({force: true}).then(() => {
+            app.listen(PORT, () => {
+                console.log(`Server is running on http://localhost:${PORT}`);
+            });
         });
     }catch (error) {
         console.error(error);

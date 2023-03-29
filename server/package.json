@@ -6,7 +6,7 @@
   "scripts": {
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "npx tsc",
-    "start": "concurrently -p \"[{name}]\" -n \"SERVER\" -c \"bgMagenta.bold\" nodemon"
+    "start": "concurrently -p \"[{name}]\" -n \"SERVER\" -c \"bgGreen.bold\" nodemon"
   },
   "author": "",
   "license": "ISC",
