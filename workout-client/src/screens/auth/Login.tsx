@@ -1,18 +1,18 @@
 import { Button, Text, TextInput, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React from "react";
+import React, { FC } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { LoginType } from "../../types/api/auth";
 import { Formik } from "formik";
 import { AuthStackParamList } from "../../types/navigation";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Link } from "../../components/Link";
 
 interface LoginFormValues extends LoginType {}
 
 type LoginProps = NativeStackScreenProps<AuthStackParamList, "Login">;
 
-const Login = ({ navigation }: LoginProps) => {
+const Login:FC<LoginProps> = ({ navigation }) => {
   const theme = useTheme();
   const initialValues: LoginFormValues = { email: "", password: "" };
   return (
@@ -26,7 +26,7 @@ const Login = ({ navigation }: LoginProps) => {
         initialValues={initialValues}
         onSubmit={(values) => console.log(values)}
       >
-        {({ handleChange, handleBlur, handleSubmit, values }) => (
+        {({ handleChange, handleBlur, handleSubmit }) => (
           <View style={styles.formContainer}>
             {Object.keys(initialValues).map((value, index) => (
               <TextInput
@@ -79,11 +79,11 @@ const styles = StyleSheet.create({
   linkContainer: {
     flexDirection: "row",
     marginTop: 10,
-    justifyContent:"center",
+    justifyContent: "center",
   },
   linkStyle: {
-    marginLeft: 5
-  }
+    marginLeft: 5,
+  },
 });
 
 export default Login;
