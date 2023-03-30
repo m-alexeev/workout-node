@@ -2,6 +2,7 @@ import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import {
   createContext,
+  FC,
   ReactNode,
   useContext,
   useEffect,
@@ -28,22 +29,28 @@ export const useAuth = () => {
   return useContext(AuthContext);
 };
 
-export const AuthProvider = (children: ReactNode) => {
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   const [authState, setAuthState] = useState<AuthType>({
     token: null,
     authenticated: null,
+    isLoading: false,
   });
-	
 
   useEffect(() => {
     const loadToken = async () => {
+      setAuthState({ ...authState, isLoading: true });
       const token = await SecureStore.getItemAsync(TOKEN_KEY);
+      setAuthState({ ...authState, isLoading: false });
       if (token) {
         // Check if token expired
         const decodedToken = parseJWT(token);
         if (Date.now() < decodedToken.exp * 1000) {
           axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-          setAuthState({ token: token, authenticated: true });
+          setAuthState({ ...authState, token: token, authenticated: true });
         }
       }
     };
@@ -52,9 +59,12 @@ export const AuthProvider = (children: ReactNode) => {
 
   const register = async (credentials: RegisterType) => {
     try {
-      return await axios.post(`${API_URL}/api/v1/users/auth/register`, {
+      setAuthState({ ...authState, isLoading: true });
+      const res = await axios.post(`${API_URL}/api/v1/users/auth/register`, {
         ...credentials,
       });
+      setAuthState({ ...authState, isLoading: false });
+      return res;
     } catch (err: any) {
       return { error: true, msg: err.response.data.message };
     }
@@ -62,10 +72,15 @@ export const AuthProvider = (children: ReactNode) => {
 
   const login = async (credentials: LoginType) => {
     try {
+      setAuthState({ ...authState, isLoading: true });
       const res = await axios.post(`${API_URL}/api/v1/users/auth/login`, {
         ...credentials,
       });
-      setAuthState({ token: res.data.token, authenticated: true });
+      setAuthState({
+        token: res.data.token,
+        authenticated: true,
+        isLoading: false,
+      });
       axios.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${res.data.token}`;
@@ -78,11 +93,11 @@ export const AuthProvider = (children: ReactNode) => {
   };
 
   const logout = async () => {
+    setAuthState({ ...authState, isLoading: true });
     await SecureStore.deleteItemAsync(TOKEN_KEY);
     axios.defaults.headers.common["Authorization"] = "";
-    setAuthState({ token: null, authenticated: null });
+    setAuthState({ token: null, authenticated: null, isLoading: false });
   };
-
 
   const value = {
     onRegister: register,

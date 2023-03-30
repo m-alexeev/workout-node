@@ -16,6 +16,7 @@ export type RegisterType = {
 export type AuthType = {
   token : string | null;  
   authenticated: boolean | null;
+  isLoading: boolean;
 }
 
 export type JWTType = {
