@@ -1,5 +1,11 @@
 import React, { FC } from "react";
-import { Button, Text, TextInput, useTheme } from "react-native-paper";
+import {
+  Button,
+  HelperText,
+  Text,
+  TextInput,
+  useTheme,
+} from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RegisterType } from "../../types/api/auth";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
@@ -7,6 +13,8 @@ import { Formik } from "formik";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Link } from "../../components/Link";
 import { AuthStackParamList } from "../../types/navigation";
+import { StatusBar } from "expo-status-bar";
+import { RegistrationSchema } from "../../types/schemas/auth-schemas";
 
 interface RegisterFormValues extends RegisterType {
   password_conf: string;
@@ -23,13 +31,12 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
     first_name: "",
     last_name: "",
   };
-  
 
   return (
     <SafeAreaView
-    style={[styles.container, { backgroundColor: theme.colors.background }]}
-
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
+      <StatusBar style={theme.dark ? "light" : "dark"}></StatusBar>
       <Text style={styles.title} variant="titleMedium">
         Register
       </Text>
@@ -37,18 +44,29 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
         initialValues={initialValues}
         onSubmit={(values) => console.log(values)}
       >
-        {({ handleChange, handleBlur, handleSubmit }) => (
+        {({ handleChange, handleBlur, handleSubmit, errors, touched }) => (
           <View style={styles.formContainer}>
-            {Object.keys(initialValues).map((value, index) => (
-              <TextInput
-                key={index}
-                style={styles.formTextField}
-                label={value.charAt(0).toUpperCase() + value.slice(1)}
-                onChangeText={handleChange(value)}
-                onBlur={handleBlur(value)}
-                secureTextEntry={value === "password"}
-              />
-            ))}
+            {Object.keys(initialValues).map((value, index) => {
+              const showErrors =
+                !!errors[value as keyof RegisterFormValues] &&
+                touched[value as keyof RegisterFormValues];
+              return (
+                <View key={index} style={styles.formTextField}>
+                  <TextInput
+                    key={index}
+                    label={value.charAt(0).toUpperCase() + value.slice(1)}
+                    onChangeText={handleChange(value)}
+                    onBlur={handleBlur(value)}
+                    secureTextEntry={value === "password"}
+                  />
+                  {showErrors && (
+                    <HelperText type="error" visible={showErrors}>
+                      {errors[value as keyof RegisterFormValues]}
+                    </HelperText>
+                  )}
+                </View>
+              );
+            })}
             <Button
               mode="contained"
               onPress={
@@ -61,11 +79,11 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
         )}
       </Formik>
       <View style={styles.linkContainer}>
-        <Text>Dont have an Account?</Text>
+        <Text>Already have an Account?</Text>
         <Link
           style={styles.linkStyle}
-          text="Register"
-          onPress={() => navigation.navigate("Register")}
+          text="Login"
+          onPress={() => navigation.replace("Login")}
         ></Link>
       </View>
     </SafeAreaView>

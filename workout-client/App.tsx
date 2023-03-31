@@ -6,7 +6,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import RootNavigator from "./src/screens/navigation/RootNavigator";
 
 export default function App() {
-  const theme = useTheme();
   return (
     <PaperProvider theme={MaterialDarkTheme}>
       <NavigationContainer>
