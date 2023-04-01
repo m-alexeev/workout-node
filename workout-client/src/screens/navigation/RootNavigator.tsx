@@ -11,7 +11,7 @@ const RootNavigator = () => {
   const { authState } = useAuth();
 
   //TODO: Add font loading check
-  if (authState?.isLoading) {
+  if (authState?.isRehydrating) {
     return <SplashScreen/>;
   }
 

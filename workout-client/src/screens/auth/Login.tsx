@@ -6,7 +6,7 @@ import {
   useTheme,
 } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { LoginType } from "../../types/api/auth";
 import { Formik } from "formik";
@@ -15,28 +15,48 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Link } from "../../components/Link";
 import { StatusBar } from "expo-status-bar";
 import { LoginSchema } from "../../types/schemas/auth-schemas";
+import { useAuth } from "../../contexts/auth";
+import { PopupDialog } from "../../components/errorDialog";
 
 interface LoginFormValues extends LoginType {}
 
 type LoginProps = NativeStackScreenProps<AuthStackParamList, "Login">;
 
 const Login: FC<LoginProps> = ({ navigation }) => {
+  const { onLogin } = useAuth();
   const theme = useTheme();
   const initialValues: LoginFormValues = { email: "", password: "" };
+  const [error, setError] = useState<string | undefined>();
+
+  const login = async (values: LoginFormValues) => {
+    const res = await onLogin!(values);
+    if (res && res.error) {
+      setError(res.message);
+    }
+  };
+
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <StatusBar style={theme.dark ? "light" : "dark"}></StatusBar>
+      <PopupDialog
+        title="Error"
+        content={error || ""}
+        show={!!error}
+        hideDialog={() => setError(undefined)}
+      ></PopupDialog>
       <Text style={styles.title} variant="titleMedium">
         Login
       </Text>
       <Formik
         validationSchema={LoginSchema}
+        validateOnChange={false}
+        validateOnBlur={false}
         initialValues={initialValues}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={login}
       >
-        {({ handleChange, handleBlur, handleSubmit, errors, touched }) => (
+        {({ handleChange, handleBlur, handleSubmit, errors, touched, isSubmitting }) => (
           <View style={styles.formContainer}>
             {Object.keys(initialValues).map((value, index) => {
               const showErrors =
@@ -60,6 +80,7 @@ const Login: FC<LoginProps> = ({ navigation }) => {
               );
             })}
             <Button
+              loading={isSubmitting}
               mode="contained"
               onPress={
                 handleSubmit as unknown as (e: GestureResponderEvent) => void

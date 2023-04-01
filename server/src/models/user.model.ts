@@ -59,6 +59,13 @@ export class User extends Model{
         }
     }
 
+    @BeforeCreate
+    static emailLowercase(user: User){
+        if (user.email){
+            user.email = user.email.toLowerCase();
+        }
+    }
+
     // Additional Functions
     validatePassword(password: string): boolean{
         console.log(password, this.password);

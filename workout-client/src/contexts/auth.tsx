@@ -38,11 +38,12 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     token: null,
     authenticated: null,
     isLoading: false,
+    isRehydrating: false,
   });
 
   useEffect(() => {
     const loadToken = async () => {
-      setAuthState({ ...authState, isLoading: true });
+      setAuthState({ ...authState, isRehydrating: true });
       const token = await SecureStore.getItemAsync(TOKEN_KEY);
       setAuthState({ ...authState, isLoading: false });
       if (token) {
@@ -50,7 +51,12 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         const decodedToken = parseJWT(token);
         if (Date.now() < decodedToken.exp * 1000) {
           axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-          setAuthState({ ...authState, token: token, authenticated: true });
+          setAuthState({
+            ...authState,
+            token: token,
+            authenticated: true,
+            isRehydrating: false,
+          });
         }
       }
     };
@@ -66,7 +72,11 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
       setAuthState({ ...authState, isLoading: false });
       return res;
     } catch (err: any) {
-      return { error: true, msg: err.response.data.message };
+      if (axios.isAxiosError(err)) {
+        return { error: true, message: err.message };
+      } else {
+        return { error: true, message: err.response.data.message };
+      }
     }
   };
 
@@ -80,15 +90,20 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         token: res.data.token,
         authenticated: true,
         isLoading: false,
+        isRehydrating: false,
       });
       axios.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${res.data.token}`;
-
+      console.log(res.data.token);
       await SecureStore.setItemAsync(TOKEN_KEY, res.data.token);
       return res;
     } catch (err: any) {
-      return { error: true, msg: err.response.data.message };
+      if (axios.isAxiosError(err)) {
+        return { error: true, message: err.message };
+      } else {
+        return { error: true, message: err.response.data.message };
+      }
     }
   };
 
@@ -96,7 +111,12 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     setAuthState({ ...authState, isLoading: true });
     await SecureStore.deleteItemAsync(TOKEN_KEY);
     axios.defaults.headers.common["Authorization"] = "";
-    setAuthState({ token: null, authenticated: null, isLoading: false });
+    setAuthState({
+      token: null,
+      authenticated: null,
+      isLoading: false,
+      isRehydrating: false,
+    });
   };
 
   const value = {

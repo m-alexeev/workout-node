@@ -1,4 +1,4 @@
-import { Provider as PaperProvider, useTheme } from "react-native-paper";
+import { Provider as PaperProvider } from "react-native-paper";
 import { MaterialDarkTheme } from "./src/theme/colors";
 import { AuthProvider } from "./src/contexts/auth";
 import { ThemeProvider } from "./src/contexts/theme";

@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import {
   Button,
   HelperText,
@@ -15,6 +15,8 @@ import { Link } from "../../components/Link";
 import { AuthStackParamList } from "../../types/navigation";
 import { StatusBar } from "expo-status-bar";
 import { RegistrationSchema } from "../../types/schemas/auth-schemas";
+import { useAuth } from "../../contexts/auth";
+import { PopupDialog } from "../../components/errorDialog";
 
 interface RegisterFormValues extends RegisterType {
   password_conf: string;
@@ -24,6 +26,8 @@ type RegisterProps = NativeStackScreenProps<AuthStackParamList, "Register">;
 
 const Register: FC<RegisterProps> = ({ navigation }) => {
   const theme = useTheme();
+  const { onRegister } = useAuth();
+  const [error, setError] = useState<string | undefined>();
   const initialValues: RegisterFormValues = {
     email: "",
     password: "",
@@ -32,16 +36,31 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
     last_name: "",
   };
 
+  const register = async (values: RegisterType) => {
+    const res = await onRegister!(values);
+    if (res && res.error) {
+      setError(res.message);
+    }
+  };
+
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <StatusBar style={theme.dark ? "light" : "dark"}></StatusBar>
+      <PopupDialog
+        title="Error"
+        content={error || ""}
+        show={!!error}
+        hideDialog={() => setError(undefined)}
+      />
       <Text style={styles.title} variant="titleMedium">
         Register
       </Text>
       <Formik
         initialValues={initialValues}
+        validateOnChange={false}
+        validateOnBlur={false}
         onSubmit={(values) => console.log(values)}
       >
         {({ handleChange, handleBlur, handleSubmit, errors, touched }) => (

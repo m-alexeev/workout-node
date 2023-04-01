@@ -17,6 +17,7 @@ export type AuthType = {
   token : string | null;  
   authenticated: boolean | null;
   isLoading: boolean;
+  isRehydrating: boolean;
 }
 
 export type JWTType = {
