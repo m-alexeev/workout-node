@@ -3,6 +3,8 @@ import * as SecureStore from "expo-secure-store";
 import { createContext, FC, ReactNode, useContext, useEffect, useState } from "react";
 import { AuthType, JWTType, LoginForm, RegisterForm } from "../types/api/auth";
 import { Login, Register } from "@workout/types";
+import { Buffer } from "buffer";
+
 
 interface AuthProps {
   authState?: AuthType;
