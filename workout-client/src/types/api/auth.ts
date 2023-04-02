@@ -1,9 +1,9 @@
-export type LoginType = {
+export type LoginForm = {
   email: string;
   password: string;
 }
 
-export type RegisterType = {
+export type RegisterForm = {
   email: string;
   password: string;
   first_name: string;
@@ -25,3 +25,4 @@ export type JWTType = {
   iat: number; 
   exp: number;
 }
+

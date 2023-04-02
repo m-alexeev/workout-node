@@ -7,7 +7,7 @@ import {
   useTheme,
 } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { RegisterType } from "../../types/api/auth";
+import { RegisterForm } from "../../types/api/auth";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Formik } from "formik";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -18,7 +18,7 @@ import { RegistrationSchema } from "../../types/schemas/auth-schemas";
 import { useAuth } from "../../contexts/auth";
 import { PopupDialog } from "../../components/errorDialog";
 
-interface RegisterFormValues extends RegisterType {
+interface RegisterFormValues extends RegisterForm {
   password_conf: string;
 }
 
@@ -36,7 +36,7 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
     last_name: "",
   };
 
-  const register = async (values: RegisterType) => {
+  const register = async (values: RegisterForm) => {
     const res = await onRegister!(values);
     if (res && res.error) {
       setError(res.message);

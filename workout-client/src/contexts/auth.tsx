@@ -1,24 +1,18 @@
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
-import {
-  createContext,
-  FC,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { AuthType, JWTType, LoginType, RegisterType } from "../types/api/auth";
+import { createContext, FC, ReactNode, useContext, useEffect, useState } from "react";
+import { AuthType, JWTType, LoginForm, RegisterForm } from "../types/api/auth";
+import { Login, Register } from "@workout/types";
 
 interface AuthProps {
   authState?: AuthType;
-  onRegister?: (credentials: RegisterType) => Promise<any>;
-  onLogin?: (credentials: LoginType) => Promise<any>;
+  onRegister?: (credentials: RegisterForm) => Promise<any>;
+  onLogin?: (credentials: LoginForm) => Promise<any>;
   onLogout?: () => Promise<any>;
 }
 
 const TOKEN_KEY = "jwt";
-export const API_URL = "http://localhost:8000/";
+export const API_URL = "http://172.28.16.1:8080";
 const AuthContext = createContext<AuthProps>({});
 
 const parseJWT = (jwt: string): JWTType => {
@@ -63,27 +57,23 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     loadToken();
   }, []);
 
-  const register = async (credentials: RegisterType) => {
+  const register = async (credentials: RegisterForm) => {
     try {
       setAuthState({ ...authState, isLoading: true });
-      const res = await axios.post(`${API_URL}/api/v1/users/auth/register`, {
+      const res = await axios.post<Register>(`${API_URL}/api/v1/users/auth/register`, {
         ...credentials,
       });
       setAuthState({ ...authState, isLoading: false });
       return res;
     } catch (err: any) {
-      if (axios.isAxiosError(err)) {
-        return { error: true, message: err.message };
-      } else {
-        return { error: true, message: err.response.data.message };
-      }
+      return { error: true, message: err.response?.data?.message || err.message };
     }
   };
 
-  const login = async (credentials: LoginType) => {
+  const login = async (credentials: LoginForm) => {
     try {
       setAuthState({ ...authState, isLoading: true });
-      const res = await axios.post(`${API_URL}/api/v1/users/auth/login`, {
+      const res = await axios.post<Login>(`${API_URL}/api/v1/users/auth/login`, {
         ...credentials,
       });
       setAuthState({
@@ -92,18 +82,12 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         isLoading: false,
         isRehydrating: false,
       });
-      axios.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${res.data.token}`;
+      axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
       console.log(res.data.token);
       await SecureStore.setItemAsync(TOKEN_KEY, res.data.token);
       return res;
     } catch (err: any) {
-      if (axios.isAxiosError(err)) {
-        return { error: true, message: err.message };
-      } else {
-        return { error: true, message: err.response.data.message };
-      }
+      return { error: true, message: err.response?.data?.message || err.message };
     }
   };
 

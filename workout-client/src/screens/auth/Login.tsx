@@ -8,7 +8,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { FC, useState } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
-import { LoginType } from "../../types/api/auth";
+import { LoginForm } from "../../types/api/auth";
 import { Formik } from "formik";
 import { AuthStackParamList } from "../../types/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -18,7 +18,7 @@ import { LoginSchema } from "../../types/schemas/auth-schemas";
 import { useAuth } from "../../contexts/auth";
 import { PopupDialog } from "../../components/errorDialog";
 
-interface LoginFormValues extends LoginType {}
+interface LoginFormValues extends LoginForm {}
 
 type LoginProps = NativeStackScreenProps<AuthStackParamList, "Login">;
 
