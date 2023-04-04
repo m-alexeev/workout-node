@@ -1,9 +1,10 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import dotenv from "dotenv";
-import { sequelize } from "./models";
+import { seedDatabase, sequelize } from "./models";
 import userRouter from "./routes/user-routes";
 
 dotenv.config();
+
 
 const BASE_URL = "/api/v1";
 const app = express();
@@ -13,14 +14,16 @@ app.use(express.json());
 // Routers
 app.use(`${BASE_URL}/users`, userRouter);
 
-const PORT = Number(process.env.SERVER_PORT)  || 8000;
+const PORT = Number(process.env.SERVER_PORT) || 8080;
 
+const RE_SEED = false;
 const start = async (): Promise<void> => {
   try {
-    sequelize.sync({ force: false, logging: false }).then(() => {
-      app.listen(PORT, '0.0.0.0', () => {
-        console.log(`Server is running on http://localhost:${PORT}`);
-      });
+    await sequelize.sync({ force: RE_SEED, logging: false });
+    if (RE_SEED) await seedDatabase();
+
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server is running on http://localhost:${PORT}`);
     });
   } catch (error) {
     console.error(error);

@@ -1,48 +1,70 @@
 import { DataTypes, Optional } from "sequelize";
 import { BelongsTo, Column, Default, ForeignKey, Model, Table } from "sequelize-typescript";
-import { ExerciseType } from "./exercisetype.model";
-import { MachineType } from "./machinetype.model";
-
+import { ExerciseCategory } from "./exercisecategory.model";
+import { ExerciseBodyPart } from "./exercisebodypart.model";
 
 @Table({ tableName: "exercises" })
 export class Exercise extends Model {
-    @Column({
-        primaryKey: true,
-        type: DataTypes.BIGINT,
-        autoIncrement: true,
-    })
-    id: bigint
+  @Column({
+    primaryKey: true,
+    type: DataTypes.BIGINT,
+    autoIncrement: true,
+  })
+  id: bigint;
 
-    @Column({
-        type: DataTypes.STRING,
-        allowNull: false,
-    })
-    name: string;
+  @Column({
+    type: DataTypes.STRING,
+    allowNull: false,
+  })
+  name: string;
 
-    @Column({
-        type: DataTypes.TEXT,
-        allowNull: true,
-    })
-    description: string;
+  @Column({
+    type: DataTypes.TEXT,
+    allowNull: true,
+  })
+  description: string;
 
-    @ForeignKey(() => ExerciseType)
-    @Column
-    exerciseTypeId: number;
+  @ForeignKey(() => ExerciseCategory)
+  @Column({
+    allowNull: false,
+  })
+  exerciseCategoryId: number;
 
-    @ForeignKey(() => MachineType)
-    @Column
-    machineTypeId: number;
+  @ForeignKey(() => ExerciseBodyPart)
+  @Column({
+    allowNull: false,
+  })
+  exerciseBodyPartId: number;
 
-    @Default(true)
-    @Column({
-        allowNull: false
-    })
-    default: boolean;
+  @Default(true)
+  @Column({
+    allowNull: false,
+    defaultValue: true,
+  })
+  default: boolean;
 
-    // Associations
-    @BelongsTo(() => ExerciseType)
-    exerciseType: ExerciseType
+  // Associations
+  @BelongsTo(() => ExerciseCategory)
+  exerciseCategory: ExerciseCategory;
 
-    @BelongsTo(() => MachineType)
-    machineType: MachineType
+  @BelongsTo(() => ExerciseBodyPart)
+  exerciseBodyPart: ExerciseBodyPart;
 }
+
+const populateExercises = async () => {
+  await Exercise.bulkCreate([
+    { name: "Bicep Curl", exerciseCategoryId: 1, exerciseBodyPartId: 2 },
+    { name: "Tricep Extension", exerciseCategoryId: 1, exerciseBodyPartId: 3 },
+    { name: "Reverse Fly", exerciseCategoryId: 2, exerciseBodyPartId: 2 },
+    { name: "Reverse Fly", exerciseCategoryId: 2, exerciseBodyPartId: 3 },
+    { name: "Lateral Raise", exerciseCategoryId: 7, exerciseBodyPartId: 2 },
+    { name: "Strict Military Press", exerciseCategoryId: 7, exerciseBodyPartId: 1 },
+    { name: "Plank", exerciseCategoryId: 5, exerciseBodyPartId: 7 },
+    { name: "Standing Calf Raise", exerciseCategoryId: 6, exerciseBodyPartId: 2 },
+    { name: "Leg Extension", exerciseCategoryId: 6, exerciseBodyPartId: 3 },
+    { name: "Lunge", exerciseCategoryId: 6, exerciseBodyPartId: 2 },
+    { name: "Arnold Press", exerciseCategoryId: 7, exerciseBodyPartId: 2 },
+  ]);
+};
+
+export { populateExercises };

@@ -1,11 +1,5 @@
 import React, { FC, useState } from "react";
-import {
-  Button,
-  HelperText,
-  Text,
-  TextInput,
-  useTheme,
-} from "react-native-paper";
+import { Button, HelperText, Text, TextInput, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RegisterForm } from "../../types/api/auth";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
@@ -40,20 +34,15 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
     const res = await onRegister!(values);
     if (res && res.error) {
       setError(res.message);
+    } else {
+      navigation.replace("Success");
     }
   };
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
-    >
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <StatusBar style={theme.dark ? "light" : "dark"}></StatusBar>
-      <PopupDialog
-        title="Error"
-        content={error || ""}
-        show={!!error}
-        hideDialog={() => setError(undefined)}
-      />
+      <PopupDialog title="Error" content={error || ""} show={!!error} hideDialog={() => setError(undefined)} />
       <Text style={styles.title} variant="titleMedium">
         Register
       </Text>
@@ -61,14 +50,16 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
         initialValues={initialValues}
         validateOnChange={false}
         validateOnBlur={false}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={async (values, { resetForm }) => {
+          await register(values);
+          resetForm();
+        }}
       >
         {({ handleChange, handleBlur, handleSubmit, errors, touched }) => (
           <View style={styles.formContainer}>
             {Object.keys(initialValues).map((value, index) => {
               const showErrors =
-                !!errors[value as keyof RegisterFormValues] &&
-                touched[value as keyof RegisterFormValues];
+                !!errors[value as keyof RegisterFormValues] && touched[value as keyof RegisterFormValues];
               return (
                 <View key={index} style={styles.formTextField}>
                   <TextInput
@@ -76,7 +67,7 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
                     label={value.charAt(0).toUpperCase() + value.slice(1)}
                     onChangeText={handleChange(value)}
                     onBlur={handleBlur(value)}
-                    secureTextEntry={value === "password"}
+                    secureTextEntry={value.includes("password")}
                   />
                   {showErrors && (
                     <HelperText type="error" visible={showErrors}>
@@ -86,24 +77,15 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
                 </View>
               );
             })}
-            <Button
-              mode="contained"
-              onPress={
-                handleSubmit as unknown as (e: GestureResponderEvent) => void
-              }
-            >
-              Login
+            <Button mode="contained" onPress={handleSubmit as unknown as (e: GestureResponderEvent) => void}>
+              Register
             </Button>
           </View>
         )}
       </Formik>
       <View style={styles.linkContainer}>
         <Text>Already have an Account?</Text>
-        <Link
-          style={styles.linkStyle}
-          text="Login"
-          onPress={() => navigation.replace("Login")}
-        ></Link>
+        <Link style={styles.linkStyle} text="Login" onPress={() => navigation.replace("Login")}></Link>
       </View>
     </SafeAreaView>
   );

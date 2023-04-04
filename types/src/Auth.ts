@@ -20,5 +20,5 @@ export interface ApiError {
   message: string;
 }
 
-export type LoginResponse = Login | AuthErrors | ApiError;
-export type RegisterResponse = Register | AuthErrors | ApiError;
+export type LoginResponse = Login  | ApiError;
+export type RegisterResponse = Register  | ApiError;

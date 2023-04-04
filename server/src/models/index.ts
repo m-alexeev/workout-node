@@ -1,5 +1,8 @@
 import { Sequelize } from "sequelize-typescript";
 import dotenv from "dotenv";
+import { populateExerciseBodyParts } from "./exercisebodypart.model";
+import { populateExerciseCategories } from "./exercisecategory.model";
+import { populateExercises } from "./exercise.model";
 
 dotenv.config();
 
@@ -24,4 +27,11 @@ const sequelize = new Sequelize({
 });
 
 
-export {sequelize}
+const seedDatabase = async () => {
+    await populateExerciseBodyParts();
+    await populateExerciseCategories();
+    await populateExercises();
+};
+
+export {sequelize, seedDatabase}
+

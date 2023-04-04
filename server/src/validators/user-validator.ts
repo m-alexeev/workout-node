@@ -1,46 +1,25 @@
-import { IsInt, IsEmail, IsStrongPassword, IsString, Length, IsBoolean, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
-import { BaseValidator } from ".";
+import { body } from "express-validator";
 
-class UserValidator extends BaseValidator{
-    @IsOptional()
-    @IsInt()
-    id?: bigint;
+class UserValidator {
+    loginValidator(){
+        return[
+            body("email").isEmail().withMessage("Invalid Email"),
+            body("password").notEmpty().withMessage("Password field should not be empty"),
+        ];
+    };
 
-    @IsEmail(undefined, {groups: ['login', 'registration']})
-    email: string;
-
-    @IsString()
-    @Length(2, 50, {groups: ["registration"]})
-    first_name: string;
-    
-    @IsString()
-    @Length(2, 50, {groups: ["registration"]})
-    last_name: string;
-
-    @IsStrongPassword(undefined, {groups: ['registration']})
-    @IsNotEmpty({groups: ["login", "registration"]})
-    password: string;
-
-    @IsBoolean()
-    active?: boolean;
+    registrationValidator(){
+        return[
+            body("email").isEmail().withMessage("InvalidEmail"),
+            body("password").isStrongPassword().withMessage("Password is too simple"),
+            body("first_name").isString().isLength({min: 2, max:100}),
+            body('last_name').isString().isLength({min: 2, max:100}),
+            body("height").optional().isNumeric(),
+            body("weight").optional().isNumeric(),
+            body("fat_percent").optional().isNumeric(),
+        ]
+    };
 }
 
-class UserStatisticsValidator extends BaseValidator{
-    @IsOptional()
-    @IsInt()
-    id: bigint
 
-    @IsOptional()
-    @IsNumber()
-    height: number
-
-    @IsOptional()
-    @IsNumber()
-    weight: number
-    
-    @IsOptional()
-    @IsNumber()
-    fat_percent: number
-}
-
-export {UserValidator, UserStatisticsValidator};
+export default new UserValidator();
