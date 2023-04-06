@@ -2,6 +2,7 @@ import { DataTypes, Optional } from "sequelize";
 import { BelongsTo, Column, Default, ForeignKey, Model, Table } from "sequelize-typescript";
 import { ExerciseCategory } from "./exercisecategory.model";
 import { ExerciseBodyPart } from "./exercisebodypart.model";
+import { User } from "./user.model";
 
 @Table({ tableName: "exercises" })
 export class Exercise extends Model {
@@ -36,6 +37,12 @@ export class Exercise extends Model {
   })
   exerciseBodyPartId: number;
 
+  @ForeignKey(() => User)
+  @Column({
+    allowNull: true,
+  })
+  userId: bigint
+
   @Default(true)
   @Column({
     allowNull: false,
@@ -49,6 +56,9 @@ export class Exercise extends Model {
 
   @BelongsTo(() => ExerciseBodyPart)
   exerciseBodyPart: ExerciseBodyPart;
+
+  @BelongsTo(() => User)
+  user: User
 }
 
 const populateExercises = async () => {

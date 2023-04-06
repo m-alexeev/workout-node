@@ -2,6 +2,7 @@ import { DataTypes, Optional } from "sequelize";
 import { Table, Column, Model,IsEmail, Default, BeforeCreate, HasMany } from "sequelize-typescript";
 import bcrypt from "bcrypt";
 import { UserStatistics } from "./userstatistics.model";
+import { Exercise } from "./exercise.model";
 
 
 @Table({ tableName: 'users' })
@@ -49,6 +50,8 @@ export class User extends Model{
     @HasMany(() => UserStatistics)
     statistics: UserStatistics;
 
+    @HasMany(() => Exercise)
+    exercises: Exercise
 
     //Hooks 
     @BeforeCreate
@@ -68,7 +71,6 @@ export class User extends Model{
 
     // Additional Functions
     validatePassword(password: string): boolean{
-        console.log(password, this.password);
         return bcrypt.compareSync(password, this.password);
     }
 }

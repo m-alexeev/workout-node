@@ -2,9 +2,8 @@ import { Request, Response } from "express";
 import dotenv from "dotenv";
 import { User } from "../models/user.model";
 import jwt from "jsonwebtoken";
-import { ValidationErrorObj } from "../types/validation";
 import { UserStatistics } from "../models/userstatistics.model";
-import { AuthErrors, Login, LoginResponse, Register, RegisterResponse, ValidationErrorSimple } from "@workout/types";
+import { Login, LoginResponse, Register, RegisterResponse } from "@workout/types";
 
 dotenv.config();
 
