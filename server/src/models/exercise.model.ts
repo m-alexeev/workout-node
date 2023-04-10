@@ -1,9 +1,12 @@
 import { DataTypes, Optional } from "sequelize";
-import { BelongsTo, Column, Default, ForeignKey, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, Default, DefaultScope, ForeignKey, Model, Scopes, Table } from "sequelize-typescript";
 import { ExerciseCategory } from "./exercisecategory.model";
 import { ExerciseBodyPart } from "./exercisebodypart.model";
 import { User } from "./user.model";
 
+@DefaultScope(() => ({
+  attributes: {exclude: ['exerciseCategoryId', 'exerciseBodyPartId', 'userId']}
+}))
 @Table({ tableName: "exercises" })
 export class Exercise extends Model {
   @Column({

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authenticateUser } from "../middleware/auth-middleware";
-import { createExercise, getAllExercises, getExericse } from "../controllers/exercise";
+import { createExercise, deleteExercise, getAllExercises, getExericse, updateExercise } from "../controllers/exercise";
 import ExerciseValidator from "../validators/exercise-validator";
 import { handleValidationErrors } from "../validators";
 
@@ -13,6 +13,8 @@ router
 
 router
   .route("/:exercise_id")
-  .get(authenticateUser, ExerciseValidator.getExerciseValidator(), handleValidationErrors, getExericse);
+  .get(authenticateUser, ExerciseValidator.getExerciseValidator(), handleValidationErrors, getExericse)
+  .put(authenticateUser, ExerciseValidator.updateExerciseValidator(), handleValidationErrors, updateExercise)
+  .delete(authenticateUser, ExerciseValidator.getExerciseValidator(), handleValidationErrors, deleteExercise);
 
 export default router;
