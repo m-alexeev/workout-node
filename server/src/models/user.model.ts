@@ -3,6 +3,7 @@ import { Table, Column, Model,IsEmail, Default, BeforeCreate, HasMany } from "se
 import bcrypt from "bcrypt";
 import { UserStatistics } from "./userstatistics.model";
 import { Exercise } from "./exercise.model";
+import { Workout } from "./workout.model";
 
 
 @Table({ tableName: 'users' })
@@ -48,10 +49,13 @@ export class User extends Model{
 
     // Associations 
     @HasMany(() => UserStatistics)
-    statistics: UserStatistics;
+    statistics: UserStatistics[];
 
     @HasMany(() => Exercise)
-    exercises: Exercise
+    exercises: Exercise[];
+
+    @HasMany(() => Workout)
+    workouts: Workout[];
 
     //Hooks 
     @BeforeCreate

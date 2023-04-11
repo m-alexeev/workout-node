@@ -76,12 +76,14 @@ const updateExercise = async (req: Request, res: Response) => {
   const exercise_id = req.params.exercise_id;
   const user = req.user;
 
-  Exercise.update({ ...req.body }, { where: { [Op.and]: [{ id: exercise_id }, { userId: user?.id }] } }).then(() => {
-    return res.status(200).json({ message: "Exercise updated" });
-  }).catch(e => {
-    console.log(e);
-    return res.status(401).json({message: "Failed to update exercise"});
-  });
+  Exercise.update({ ...req.body }, { where: { [Op.and]: [{ id: exercise_id }, { userId: user?.id }] } })
+    .then(() => {
+      return res.status(200).json({ message: "Exercise updated" });
+    })
+    .catch((e) => {
+      console.log(e);
+      return res.status(401).json({ message: "Failed to update exercise" });
+    });
 };
 
 // Mark an exercises as deleted for a user

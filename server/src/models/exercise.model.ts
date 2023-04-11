@@ -1,8 +1,9 @@
 import { DataTypes, Optional } from "sequelize";
-import { BelongsTo, Column, Default, DefaultScope, ForeignKey, Model, Scopes, Table } from "sequelize-typescript";
+import { BelongsTo, Column, Default, DefaultScope, ForeignKey, HasOne, Model, Scopes, Table } from "sequelize-typescript";
 import { ExerciseCategory } from "./exercisecategory.model";
 import { ExerciseBodyPart } from "./exercisebodypart.model";
 import { User } from "./user.model";
+import { WorkoutEntry } from "./workoutentry.model";
 
 @DefaultScope(() => ({
   attributes: {exclude: ['exerciseCategoryId', 'exerciseBodyPartId', 'userId']}
@@ -62,6 +63,9 @@ export class Exercise extends Model {
 
   @BelongsTo(() => User)
   user: User
+
+  @HasOne(() => WorkoutEntry)
+  workoutEntry: WorkoutEntry;
 }
 
 const populateExercises = async () => {
