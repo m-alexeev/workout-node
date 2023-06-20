@@ -9,7 +9,7 @@ import { Link } from "../../../components/Link";
 import { AuthStackParamList } from "../../../types/navigation";
 import { StatusBar } from "expo-status-bar";
 import { RegistrationSchema } from "../../../types/legacy/schemas/auth-schemas";
-import { useAuth } from "../../contexts/auth";
+import { useAuth } from "../../../contexts/legacy/auth";
 import { PopupDialog } from "../../../components/errorDialog";
 
 interface RegisterFormValues extends RegisterForm {
