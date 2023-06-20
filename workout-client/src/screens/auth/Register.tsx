@@ -1,9 +1,9 @@
 import React, { FC, useState } from "react";
 import {
+  Appbar,
   Button,
   HelperText,
-  SegmentedButtons,
-  Text,
+  Menu,
   TextInput,
   useTheme,
 } from "react-native-paper";
@@ -15,15 +15,21 @@ import { StatusBar } from "expo-status-bar";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Formik } from "formik";
 import { useAuth } from "../../contexts/auth";
-import { PopupDialog } from "../../components/errorDialog";
-import DropDownPicker from "react-native-dropdown-picker";
 import { RegisterSchema } from "./schemas";
+import { useConfig } from "../../contexts/config";
+import { Platform } from "react-native";
+import { MultiChoiceDialog } from "../../components/multichoiceDialog";
 
 type RegisterProps = NativeStackScreenProps<AuthStackParamList, "Register">;
 
+const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
+
 const Register: FC<RegisterProps> = ({ navigation }) => {
-  const [error, setError] = useState<string | undefined>();
-  const [units, setUnits] = useState<"Metric" | "Imperial">("Metric");
+  const { config, updateUnits, updateLanguage } = useConfig();
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  const [dialog, setOpenDialog] = useState(false);
+
   const { onRegister } = useAuth();
   const theme = useTheme();
   const initialValues: LocalUser = {
@@ -35,7 +41,7 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
 
   const registerLocal = async (values: LocalUser) => {
     // convert units if entered in Imperial
-    if (units === "Imperial") {
+    if (config.units === "imperial") {
       if (values.height !== undefined) {
         values.height = values.height / 3.281;
       }
@@ -43,32 +49,38 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
         values.weight = values.weight / 2.205;
       }
     }
-    const res = await onRegister!(values);
-    if (res && res.error) {
-      setError(res.message);
-    } else {
-      navigation.replace("Success");
-    }
+    // redirection will happen automatically as soon as user is set in context
+    await onRegister!(values);
   };
 
-  const changeUnits = (value: any) => {
-    setUnits(value);
-  };
+  const openMenu = () => setMenuVisible(true);
+  const closeMenu = () => setMenuVisible(false);
 
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <StatusBar style={theme.dark ? "light" : "dark"}></StatusBar>
-      <PopupDialog
-        title="Error"
-        content={error || ""}
-        show={!!error}
-        hideDialog={() => setError(undefined)}
-      />
-      <Text style={styles.title} variant="titleMedium">
-        Create Profile
-      </Text>
+      <Appbar.Header>
+        <Appbar.Content title={"Create Profile"}></Appbar.Content>
+
+        <Menu
+          visible={menuVisible}
+          onDismiss={closeMenu}
+          anchor={
+            <Appbar.Action icon={MORE_ICON} onPress={openMenu}></Appbar.Action>
+          }
+        >
+          <Menu.Item onPress={() => {setOpenDialog(true)}} leadingIcon="cog" title="Configure" />
+        </Menu>
+      </Appbar.Header>
+
+      <MultiChoiceDialog
+        title="Configuration"
+        choices={["imperial", "metric"]}
+        show={dialog}
+        hideDialog={() => setOpenDialog(false)}
+      ></MultiChoiceDialog>
 
       <Formik
         initialValues={initialValues}
@@ -82,15 +94,6 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
       >
         {({ handleChange, handleBlur, handleSubmit, errors, touched }) => (
           <View style={styles.formContainer}>
-            <SegmentedButtons
-              style={styles.units}
-              value={units}
-              onValueChange={(value) => changeUnits(value)}
-              buttons={[
-                { value: "Imperial", label: "Imperial" },
-                { value: "Metric", label: "Metric" },
-              ]}
-            />
             <View style={styles.formTextField}>
               <View style={styles.formTextField}>
                 <TextInput
@@ -122,7 +125,9 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
                   keyboardType="numeric"
                   error={!!errors.height}
                   right={
-                    <TextInput.Affix text={units === "Imperial" ? "ft" : "m"} />
+                    <TextInput.Affix
+                      text={config.units === "imperial" ? "ft" : "m"}
+                    />
                   }
                 />
                 {errors.height && touched.height && (
@@ -137,7 +142,7 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
                   error={!!errors.weight}
                   right={
                     <TextInput.Affix
-                      text={units === "Imperial" ? "lbs" : "kg"}
+                      text={config.units === "imperial" ? "lbs" : "kg"}
                     />
                   }
                   onBlur={handleBlur("weight")}
@@ -166,7 +171,6 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
   },
   units: {
     marginHorizontal: 20,

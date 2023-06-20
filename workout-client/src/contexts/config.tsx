@@ -36,12 +36,12 @@ const ConfigProvider: FC<ConfigProps> = ({ children }) => {
     if (configJson){
         config = JSON.parse(configJson);
     }
-		setConfig(config as ConfigType);		
+		 setConfig(config as ConfigType);		
   };
 
   useEffect(() => {
     getSavedConfig();
-  });
+  }, []);
 
 	useEffect(() => {
 		// save updated config to local storage
@@ -64,3 +64,8 @@ const ConfigProvider: FC<ConfigProps> = ({ children }) => {
 	)
 
 };
+
+export const useConfig = () => 
+	useContext(ConfigContext) as IConfigContextInterface;	
+
+export {ConfigProvider}

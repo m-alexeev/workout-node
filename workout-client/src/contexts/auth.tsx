@@ -15,6 +15,7 @@ const USER_KEY = "user";
 interface AuthProps {
   authState?: LocalAuthType;
   onRegister?: (credentials: LocalUser) => Promise<any>;
+  ResetUserTemp?: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthProps>({});
@@ -48,6 +49,11 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     loadUser();
   }, []);
 
+  const ResetUserTemp = async() =>  {
+   await SecureStore.deleteItemAsync("user");
+    setAuthState({...authState, user: null});
+  }
+
   const LocalRegister = async (credentials: LocalUser) => {
     try {
       setAuthState({ ...authState, isLoading: true });
@@ -60,6 +66,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
 
   const value = {
     onRegister: LocalRegister,
+    ResetUserTemp: ResetUserTemp,
     authState,
   };
 
