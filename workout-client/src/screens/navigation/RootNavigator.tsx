@@ -17,7 +17,7 @@ const RootNavigator = () => {
 
   return (
     <RootStack.Navigator screenOptions={{headerShown:false}}>
-      {authState?.token === null ? (
+      {authState?.user === null ? (
         <RootStack.Screen name="AuthRoute" component={AuthNavigator}></RootStack.Screen>
       ) : (
         <RootStack.Screen name="MainRoute" component={MainScreen}></RootStack.Screen>

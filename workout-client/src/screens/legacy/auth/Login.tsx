@@ -8,15 +8,15 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { FC, useState } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
-import { LoginForm } from "../../types/api/auth";
+import { LoginForm } from "../../../types/legacy/api/auth";
 import { Formik } from "formik";
-import { AuthStackParamList } from "../../types/navigation";
+import { AuthStackParamList } from "../../../types/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Link } from "../../components/Link";
+import { Link } from "../../../components/Link";
 import { StatusBar } from "expo-status-bar";
-import { LoginSchema } from "../../types/schemas/auth-schemas";
+import { LoginSchema } from "../../../types/legacy/schemas/auth-schemas";
 import { useAuth } from "../../contexts/auth";
-import { PopupDialog } from "../../components/errorDialog";
+import { PopupDialog } from "../../../components/errorDialog";
 
 interface LoginFormValues extends LoginForm {}
 
