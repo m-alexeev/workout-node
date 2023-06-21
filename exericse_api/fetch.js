@@ -1,7 +1,7 @@
 require('dotenv').config()
 const fs = require('fs');
 
-OUTPUT_PATH = '../workout-client/assets/data'
+const OUTPUT_PATH = '../workout-client/assets/data'
 
 const HEADERS = {
     'X-RapidAPI-Key': process.env.KEY,
@@ -47,3 +47,5 @@ const fetchApiData = () => {
 }
 
 fetchApiData();
+
+module.exports = {OUTPUT_PATH};
