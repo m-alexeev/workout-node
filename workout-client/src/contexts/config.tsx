@@ -36,7 +36,7 @@ const ConfigProvider: FC<ConfigProps> = ({ children }) => {
     if (configJson){
         config = JSON.parse(configJson);
     }
-		 setConfig(config as ConfigType);		
+		setConfig(config as ConfigType);		
   };
 
   useEffect(() => {

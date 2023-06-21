@@ -18,14 +18,14 @@ import { useAuth } from "../../contexts/auth";
 import { RegisterSchema } from "./schemas";
 import { useConfig } from "../../contexts/config";
 import { Platform } from "react-native";
-import { MultiChoiceDialog } from "../../components/multichoiceDialog";
+import { ConfigurationDialog } from "../../components/configurationDialog";
 
 type RegisterProps = NativeStackScreenProps<AuthStackParamList, "Register">;
 
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 
 const Register: FC<RegisterProps> = ({ navigation }) => {
-  const { config, updateUnits, updateLanguage } = useConfig();
+  const { config } = useConfig();
   const [menuVisible, setMenuVisible] = useState(false);
 
   const [dialog, setOpenDialog] = useState(false);
@@ -49,6 +49,10 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
         values.weight = values.weight / 2.205;
       }
     }
+    // Strip whitespaces
+    values.first_name = values.first_name.trim();
+    values.last_name = values.last_name.trim();
+
     // redirection will happen automatically as soon as user is set in context
     await onRegister!(values);
   };
@@ -57,7 +61,7 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
   const closeMenu = () => setMenuVisible(false);
 
   return (
-    <SafeAreaView
+    <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <StatusBar style={theme.dark ? "light" : "dark"}></StatusBar>
@@ -75,12 +79,10 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
         </Menu>
       </Appbar.Header>
 
-      <MultiChoiceDialog
-        title="Configuration"
-        choices={["imperial", "metric"]}
+      <ConfigurationDialog
         show={dialog}
         hideDialog={() => setOpenDialog(false)}
-      ></MultiChoiceDialog>
+      ></ConfigurationDialog>
 
       <Formik
         initialValues={initialValues}
@@ -122,7 +124,7 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
                   label="Height"
                   onChangeText={handleChange("height")}
                   onBlur={handleBlur("height")}
-                  keyboardType="numeric"
+                  keyboardType="phone-pad"
                   error={!!errors.height}
                   right={
                     <TextInput.Affix
@@ -138,7 +140,7 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
                 <TextInput
                   label="Weight"
                   onChangeText={handleChange("weight")}
-                  keyboardType="numeric"
+                  keyboardType="phone-pad"
                   error={!!errors.weight}
                   right={
                     <TextInput.Affix
@@ -164,7 +166,7 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
           </View>
         )}
       </Formik>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -182,6 +184,10 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     paddingHorizontal: 30,
+    flex:1,
+    width:"100%",
+    justifyContent:"center",
+    alignSelf: "center"
   },
   formTextField: {
     marginVertical: 10,
