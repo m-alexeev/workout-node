@@ -1,16 +1,16 @@
 import { useAuth } from "../../contexts/auth";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types/navigation";
-import MainScreen from "../MainScreen";
+import TabNavigator from "./TabNavigator";
 import SplashScreen from "../SplashScreen";
 import AuthNavigator from "./AuthNavigator";
+import {useFonts} from "expo-font";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
   const { authState } = useAuth();
 
-  //TODO: Add font loading check
   if (authState?.isRehydrating) {
     return <SplashScreen/>;
   }
@@ -20,7 +20,7 @@ const RootNavigator = () => {
       {authState?.user === null ? (
         <RootStack.Screen name="AuthRoute" component={AuthNavigator}></RootStack.Screen>
       ) : (
-        <RootStack.Screen name="MainRoute" component={MainScreen}></RootStack.Screen>
+        <RootStack.Screen name="MainRoute" component={TabNavigator}></RootStack.Screen>
       )}
     </RootStack.Navigator>
   );
