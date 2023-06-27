@@ -21,11 +21,20 @@ const TabNavigator = () => {
         tabBarActiveBackgroundColor: theme.colors.background,
         tabBarInactiveBackgroundColor: theme.colors.background,
         tabBarActiveTintColor: theme.colors.primary,
+        tabBarStyle: {
+          borderTopWidth: 0,
+
+        },
+        tabBarLabelStyle: {
+          fontSize: 11,
+          paddingBottom: 3,
+        },
+        headerShown: false,
       }}
     >
       <BottomTabNavigator.Screen
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
+          tabBarIcon: ({color, size }) => (
             <Icon name="home" size={size} color={color}></Icon>
           ),
         }}
