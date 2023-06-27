@@ -32,23 +32,33 @@ const TabNavigator = () => {
         name="Dashboard"
         component={DashboardScreen}
       />
-      <BottomTabNavigator.Screen name="Exercises" 
-              options={{
-                tabBarIcon: ({ color, size }) => (
-                  <Icon name="dumbbell" size={size} color={color}></Icon>
-                ),
-              }}component={ExerciseScreen} />
-      <BottomTabNavigator.Screen name="History"
-              options={{
-                tabBarIcon: ({ color, size }) => (
-                  <Icon name="clock-outline" size={size} color={color}></Icon>
-                ),
-              }} component={HistoryScreen} />
-      <BottomTabNavigator.Screen name="Profile"        options={{
-          tabBarIcon: ({  color, size }) => (
+      <BottomTabNavigator.Screen
+        name="Exercises"
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="dumbbell" size={size} color={color}></Icon>
+          ),
+        }}
+        component={ExerciseScreen}
+      />
+      <BottomTabNavigator.Screen
+        name="History"
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="clock-outline" size={size} color={color}></Icon>
+          ),
+        }}
+        component={HistoryScreen}
+      />
+      <BottomTabNavigator.Screen
+        name="Profile"
+        options={{
+          tabBarIcon: ({ color, size }) => (
             <Icon name="account-outline" size={size} color={color}></Icon>
           ),
-        }} component={ProfileScreen} />
+        }}
+        component={ProfileScreen}
+      />
     </BottomTabNavigator.Navigator>
   );
 };
