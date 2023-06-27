@@ -6,5 +6,24 @@ export type RootStackParamList = {
 export type AuthStackParamList = {
   Register: undefined;
   Login: undefined;
-  Success: undefined;
 }
+
+export type DashbboardStackParamList = {
+
+};
+
+export type ExerciseStackParamList = {
+
+};
+
+export type HistoryStackParamList = {
+
+};
+
+export type ProfileStackParamList = {
+
+};
+
+export type WorkoutStackParamList = {
+  Workout: undefined;
+};
