@@ -37,8 +37,9 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const loadUser = async () => {
+      setAuthState({ ...authState, isRehydrating: true });
       const user = await SecureStore.getItemAsync(USER_KEY);
-      setAuthState({ ...authState, isLoading: false });
+      setAuthState({ ...authState, isRehydrating: false });
 
       if (user) {
         const decodedUser = JSON.parse(user);

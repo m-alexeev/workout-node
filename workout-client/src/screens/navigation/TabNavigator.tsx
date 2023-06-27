@@ -1,18 +1,18 @@
 import React from "react";
-import { useAuth } from "../contexts/auth";
+import { useAuth } from "../../contexts/auth";
 import { useTheme } from "react-native-paper";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { MainTabParamList } from "../types/navigation";
-import DashboardScreen from "./bottomTabs/DashboardScreen";
-import WorkoutScreen from "./bottomTabs/WorkoutScreen";
-import ExerciseScreen from "./bottomTabs/ExercisesScreen";
-import HistoryScreen from "./bottomTabs/HistoryScreen";
-import ProfileScreen from "./bottomTabs/ProfileScreen";
+import { MainTabParamList } from "../../types/navigation";
+import DashboardScreen from "../bottomTabs/DashboardScreen";
+import WorkoutScreen from "../bottomTabs/WorkoutScreen";
+import ExerciseScreen from "../bottomTabs/ExercisesScreen";
+import HistoryScreen from "../bottomTabs/HistoryScreen";
+import ProfileScreen from "../bottomTabs/ProfileScreen";
 import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
 
 const BottomTabNavigator = createBottomTabNavigator<MainTabParamList>();
 
-const MainNavigator = () => {
+const TabNavigator = () => {
   const theme = useTheme();
 
   return (
@@ -53,4 +53,4 @@ const MainNavigator = () => {
   );
 };
 
-export default MainNavigator;
+export default TabNavigator;
