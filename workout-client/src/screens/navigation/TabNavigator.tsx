@@ -23,7 +23,6 @@ const TabNavigator = () => {
         tabBarActiveTintColor: theme.colors.primary,
         tabBarStyle: {
           borderTopWidth: 0,
-
         },
         tabBarLabelStyle: {
           fontSize: 11,
