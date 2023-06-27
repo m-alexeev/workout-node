@@ -1,7 +1,7 @@
 import { useAuth } from "../../contexts/auth";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types/navigation";
-import MainScreen from "../MainScreen";
+import MainNavigator from "../MainNavigator";
 import SplashScreen from "../SplashScreen";
 import AuthNavigator from "./AuthNavigator";
 
@@ -20,7 +20,7 @@ const RootNavigator = () => {
       {authState?.user === null ? (
         <RootStack.Screen name="AuthRoute" component={AuthNavigator}></RootStack.Screen>
       ) : (
-        <RootStack.Screen name="MainRoute" component={MainScreen}></RootStack.Screen>
+        <RootStack.Screen name="MainRoute" component={MainNavigator}></RootStack.Screen>
       )}
     </RootStack.Navigator>
   );
