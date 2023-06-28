@@ -7,7 +7,7 @@ import React, {
   useContext,
 } from "react";
 import * as SecureStore from "expo-secure-store";
-import { LanguageType, UnitType } from "../types/config";
+import { LanguageType, UnitType } from "../types/contexts";
 
 type ConfigType = {
   units: UnitType;

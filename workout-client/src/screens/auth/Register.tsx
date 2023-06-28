@@ -9,7 +9,7 @@ import {
 } from "react-native-paper";
 import { AuthStackParamList } from "../../types/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { LocalUser } from "../../types/auth";
+import { LocalUser } from "../../types/contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";

@@ -25,6 +25,10 @@ export type DashboardStackParamList = {
 
 export type ExerciseStackParamList = {
   Exercises: undefined;
+  Exercise: {exerciseID: string};
+  About: {exerciseID: string};
+  Records: {exerciseID: string};
+  History: {exerciseID: string};
 };
 
 export type HistoryStackParamList = {
