@@ -1,4 +1,4 @@
-export type jsonExerciseType = {
+export type exerciseType = {
   id: string;
   bodyPart: bodyPartType;
   equipment: equipmentType;
