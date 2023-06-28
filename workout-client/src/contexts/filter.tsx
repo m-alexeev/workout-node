@@ -12,7 +12,10 @@ import { bodyPartType, equipmentType, targetType } from "../types/exercises";
 export interface IFilterContextInterface {
   filters: IFilterInterface;
   searchUpdate: (query: string) => void;
-  filtersUpdate: (filter: equipmentType | targetType | bodyPartType) => void;
+  filtersUpdate: (
+    key: keyof Omit<IFilterInterface, "name">,
+    filter: equipmentType | targetType | bodyPartType
+  ) => void;
 }
 
 interface FilterContextProps {
@@ -21,7 +24,7 @@ interface FilterContextProps {
 
 const FilterContext = createContext<IFilterContextInterface | null>(null);
 
-const ContextProvider: FC<FilterContextProps> = ({ children }) => {
+const FilterProvider: FC<FilterContextProps> = ({ children }) => {
   const [filters, setFilter] = useState<IFilterInterface>({
     name: "",
     targets: [],
@@ -29,15 +32,41 @@ const ContextProvider: FC<FilterContextProps> = ({ children }) => {
     equipments: [],
   });
 
-  const searchUpdate = (query: string) => {};
+  const searchUpdate = (query: string) => {
+    setFilter({...filters, name: query});
+  };
 
   const filtersUpdate = (
-    filters: equipmentType | targetType | bodyPartType
-  ) => {};
+    key: keyof Omit<IFilterInterface, "name">,
+    filter: equipmentType | targetType | bodyPartType
+  ) => {
+    // Check if filter in list 
+    // Remove if present else add
+
+    // any[] to avoid type errors
+    const activeList: any[] = filters[key];
+    if (activeList.includes(filter)){
+      activeList.splice(activeList.indexOf(filter));
+    }else{
+      activeList.push(filter);      
+    }
+    // Update filter list
+    setFilter({...filters,[key]: filter});
+  };
+
+
+  useEffect(()=> {
+    console.log(filters);
+  },[filters]);
 
   return (
-    <FilterContext.Provider
-      value={{ filters, filtersUpdate, searchUpdate }}
-    ></FilterContext.Provider>
+    <FilterContext.Provider value={{ filters, filtersUpdate, searchUpdate }}>
+      {children}
+    </FilterContext.Provider>
   );
 };
+
+export const useFilters = () =>
+  useContext(FilterContext) as IFilterContextInterface;
+
+export { FilterProvider };
