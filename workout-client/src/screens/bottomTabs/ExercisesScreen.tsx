@@ -27,7 +27,7 @@ const unfilteredExercises =
 const ExerciseScreen: FC<ExerciseScreenProps> = ({ navigation }) => {
   const { theme } = useTheme();
   // const [filteredExercises, setFilteredExercises] = useState<exerciseType[]>(unfilteredExercises);
-  // const { filters } = useFilters();
+   const { filters } = useFilters();
 
   // useEffect(() => {}, [filters]);
   return (

@@ -60,13 +60,18 @@ const FilterProvider: FC<FilterContextProps> = ({ children }) => {
   },[filters]);
 
   return (
-    <FilterContext.Provider value={{ filters, filtersUpdate, searchUpdate }}>
+    <FilterContext.Provider value={{filters, filtersUpdate, searchUpdate }}>
       {children}
     </FilterContext.Provider>
   );
 };
 
-export const useFilters = () =>
-  useContext(FilterContext) as IFilterContextInterface;
+export const useFilters = () =>{
+  const context = useContext(FilterContext) as IFilterContextInterface;
+  if (context === undefined){
+    throw new Error("useFilters must be used within a FilterProvider");
+  }
+  return context;
+}
 
 export { FilterProvider };

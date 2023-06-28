@@ -5,6 +5,7 @@ import { ThemeProvider } from "./src/contexts/theme";
 import { NavigationContainer } from "@react-navigation/native";
 import RootNavigator from "./src/screens/navigation/RootNavigator";
 import { ConfigProvider } from "./src/contexts/config";
+import { FilterProvider } from "./src/contexts/filter";
 
 export default function App() {
   return (
@@ -13,7 +14,9 @@ export default function App() {
         <ThemeProvider>
           <ConfigProvider>
             <AuthProvider>
+              <FilterProvider>
               <RootNavigator />
+              </FilterProvider>
             </AuthProvider>
           </ConfigProvider>
         </ThemeProvider>
