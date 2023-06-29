@@ -47,12 +47,13 @@ def fetchGifs():
 
 
 def addRequires():
-  with open(f"{OUTPUT_DIR}/exercises_orig.json", "r") as f:
+  img_obj = {}
+  with open(f"{OUTPUT_DIR}/exercises.json", "r") as f:
     data = json.load(f)
     for obj in data: 
-      obj["imgSrc"] = f"require('../../assets/data/media/{obj['id']}.gif')"
-    with open(f"{OUTPUT_DIR}/exercises.json", "w") as f2:        
-      jsonObj = json.dumps(data, indent = 2)
+      img_obj[f"{obj['id']}"] = f"require('../../assets/data/media/{obj['id']}.gif')"
+    with open(f"{OUTPUT_DIR}/exercises_img.json", "w") as f2:        
+      jsonObj = json.dumps(img_obj, indent = 2)
       f2.write(jsonObj)
 
 addRequires()
