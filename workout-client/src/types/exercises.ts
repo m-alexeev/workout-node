@@ -7,6 +7,10 @@ export type exerciseType = {
   target: targetType;
 };
 
+export type exerciseImageType = {
+  [key: string]: string;
+}
+
 export type targetType =
   | "abductors"
   | "abs"

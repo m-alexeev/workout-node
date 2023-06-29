@@ -60,4 +60,4 @@ const ThemeProvider: FC<ThemeProps> = ({ children }) => {
 export const useTheme = () =>
   useContext(ThemeContext) as IThemeContextInterface;
 
-export { ThemeProvider };
+export { ThemeProvider, ThemeContext };

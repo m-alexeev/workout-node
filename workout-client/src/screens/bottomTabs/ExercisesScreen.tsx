@@ -18,6 +18,7 @@ type ExerciseScreenProps = CompositeScreenProps<
   NativeStackScreenProps<ExerciseStackParamList>
 >;
 
+// TODO: move exercise data to a ts file with image imports
 // TODO: Apply filter to exercise list
 // TODO: Add navigation to exercise page
 
@@ -26,10 +27,11 @@ const unfilteredExercises =
 
 const ExerciseScreen: FC<ExerciseScreenProps> = ({ navigation }) => {
   const { theme } = useTheme();
-  // const [filteredExercises, setFilteredExercises] = useState<exerciseType[]>(unfilteredExercises);
-   const { filters } = useFilters();
+  const [filteredExercises, setFilteredExercises] = useState<exerciseType[]>(unfilteredExercises);
+  const { filters } = useFilters();
 
-  // useEffect(() => {}, [filters]);
+  useEffect(() => {}, [filters]);
+
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.background }]}
@@ -37,9 +39,9 @@ const ExerciseScreen: FC<ExerciseScreenProps> = ({ navigation }) => {
       <List.Section>
         <List.Subheader>Exercises</List.Subheader>
         <FlatList
-          data={unfilteredExercises}
+          data={filteredExercises}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <ExerciseListItem name={item.name} />}
+          renderItem={({ item }) => <ExerciseListItem {...item} />}
         ></FlatList>
       </List.Section>
     </SafeAreaView>
