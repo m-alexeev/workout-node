@@ -43,8 +43,18 @@ def fetchGifs():
       else:
         print("Cant find file " + imgURL)
 
-fetchGifs()
+# fetchGifs()
 
 
+def addRequires():
+  with open(f"{OUTPUT_DIR}/exercises_orig.json", "r") as f:
+    data = json.load(f)
+    for obj in data: 
+      obj["imgSrc"] = f"require('../../assets/data/media/{obj['id']}.gif')"
+    with open(f"{OUTPUT_DIR}/exercises.json", "w") as f2:        
+      jsonObj = json.dumps(data, indent = 2)
+      f2.write(jsonObj)
+
+addRequires()
        
 
