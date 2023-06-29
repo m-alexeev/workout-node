@@ -19,7 +19,10 @@ const ExerciseListItem: FC<exerciseListItemProps> = ({
   return (
     <View style={[styles.container]}>
       <View style={styles.imageContainer}>
-        <Avatar.Image style={styles.img} source={ExerciseImages.getExerciseImgById(id)}/>
+        <Avatar.Image
+          style={styles.img}
+          source={ExerciseImages.getExerciseImgById(id)}
+        />
       </View>
       <View style={styles.contentContainer}>
         <Text style={styles.name}>{name}</Text>
@@ -32,13 +35,30 @@ const ExerciseListItem: FC<exerciseListItemProps> = ({
 export default ExerciseListItem;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, borderBottomWidth: 1, flexDirection: "row", marginHorizontal: 10, marginBottom: 5 },
-  contentContainer: { flex: 1, marginLeft: 10, justifyContent: "space-around"},
-  imageContainer: {justifyContent: "center",},
-  name: { fontWeight: "bold", fontSize: 16,},
-  bodyPart: {},
+  container: {
+    flex: 1,
+    borderBottomWidth: 1,
+    flexDirection: "row",
+    marginHorizontal: 10,
+    marginBottom: 10,
+  },
+  contentContainer: { 
+    flex: 1, 
+    marginLeft: 10, 
+    justifyContent: "space-around" 
+  },
+  imageContainer: { 
+    justifyContent: "center" 
+  },
+  name: { 
+    fontWeight: "bold", 
+    fontSize: 16 
+  },
+  bodyPart: {
+    opacity: 0.8
+  },
   img: {
-    overflow: 'hidden',
+    overflow: "hidden",
     borderRadius: 32,
   },
 });
