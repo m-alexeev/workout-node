@@ -5,10 +5,11 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MainTabParamList } from "../../types/navigation";
 import DashboardScreen from "../bottomTabs/DashboardScreen";
 import WorkoutScreen from "../bottomTabs/WorkoutScreen";
-import ExerciseScreen from "../bottomTabs/ExercisesScreen";
+import ExerciseScreen from "../bottomTabs/ExercisesList";
 import HistoryScreen from "../bottomTabs/HistoryScreen";
 import ProfileScreen from "../bottomTabs/ProfileScreen";
 import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
+import ExerciseStackNavigator from "./ExerciseStackNavigator";
 
 const BottomTabNavigator = createBottomTabNavigator<MainTabParamList>();
 
@@ -47,7 +48,7 @@ const TabNavigator = () => {
             <Icon name="dumbbell" size={size} color={color}></Icon>
           ),
         }}
-        component={ExerciseScreen}
+        component={ExerciseStackNavigator}
       />
       <BottomTabNavigator.Screen
         name="History"

@@ -1,9 +1,9 @@
-import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import type { MaterialTopTabScreenProps } from "@react-navigation/material-top-tabs"
 import type { CompositeScreenProps } from "@react-navigation/native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import {
   ExerciseStackParamList,
-  MainTabParamList,
+  ExerciseTabParamList,
 } from "../../types/navigation";
 import React, { FC, useEffect, useState } from "react";
 import { List, Text } from "react-native-paper";
@@ -14,11 +14,10 @@ import { useFilters } from "../../contexts/filter";
 import ExerciseListItem from "../../components/exercises/exerciseListItem";
 
 type ExerciseScreenProps = CompositeScreenProps<
-  BottomTabScreenProps<MainTabParamList, "Exercises">,
-  NativeStackScreenProps<ExerciseStackParamList>
+  NativeStackScreenProps<ExerciseStackParamList, "ExerciseList">,
+  MaterialTopTabScreenProps<ExerciseTabParamList>
 >;
 
-// TODO: move exercise data to a ts file with image imports
 // TODO: Apply filter to exercise list
 // TODO: Add navigation to exercise page
 
@@ -32,6 +31,10 @@ const ExerciseScreen: FC<ExerciseScreenProps> = ({ navigation }) => {
 
   useEffect(() => {}, [filters]);
 
+  const handlePress = (id: string ) => {
+    navigation.navigate("Exercise", {exerciseID: id});
+  }
+
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.background }]}
@@ -41,7 +44,8 @@ const ExerciseScreen: FC<ExerciseScreenProps> = ({ navigation }) => {
         <FlatList
           data={filteredExercises}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <ExerciseListItem {...item} />}
+          initialNumToRender={10}
+          renderItem={({ item }) => <ExerciseListItem {...item} handlePress={handlePress} />}
         ></FlatList>
       </List.Section>
     </SafeAreaView>
