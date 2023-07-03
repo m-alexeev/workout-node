@@ -34,8 +34,6 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
     const res = await onRegister!(values);
     if (res && res.error) {
       setError(res.message);
-    } else {
-      navigation.replace("Success");
     }
   };
 
