@@ -3,6 +3,9 @@ import dotenv from "dotenv";
 import { seedDatabase, sequelize } from "./models";
 import userRouter from "./routes/user-routes";
 import exerciseRouter from './routes/exercise-routes';
+import workoutRouter from './routes/workout-routes';
+import templateRouter from './routes/template-routes';
+
 
 dotenv.config();
 
@@ -15,6 +18,9 @@ app.use(express.json());
 // Routers
 app.use(`${BASE_URL}/users`, userRouter);
 app.use(`${BASE_URL}/exercises`, exerciseRouter);
+app.use(`${BASE_URL}/workouts`, workoutRouter);
+app.use(`${BASE_URL}/templates`, templateRouter)
+
 
 const PORT = Number(process.env.SERVER_PORT) || 8080;
 

@@ -1,24 +1,12 @@
 {
-    "todo-tree.highlights.defaultHighlight": {
-        "icon": "alert",
-        "type": "text",
-        "foreground": "darkorange",
-        "background": "gray",
-        "opacity": 50,
-        "iconColour": "blue"
-    },
-    "todo-tree.highlights.customHighlight": {
-        "TODO": {
-            "icon": "check",
-            "type": "line"
-        },
-        "FIXME": {
-            "foreground": "black",
-            "iconColour": "yellow",
-            "gutterIcon": true
-        }
-    },
     "editor.indentSize": "tabSize",
-    "editor.tabSize": 2
-
+    // "editor.tabSize": 2,
+    "[python]": {
+        "diffEditor.ignoreTrimWhitespace": false,
+        "editor.formatOnType": true,
+        "editor.wordBasedSuggestions": false,
+        "editor.tabSize": 4,
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "python.formatting.provider": "none",
 }
