@@ -1,6 +1,7 @@
 import requests
 from dotenv import load_dotenv
 import os
+import sys
 import json
 
 load_dotenv()
@@ -32,7 +33,18 @@ def fetchList():
 
 def fetchGifs():
   gifUrl = urls[0]
-  res = requests.get(gifUrl, headers=headers).json() 
+  res = requests.get(gifUrl, headers=headers)
+  if (res.status_code >= 200 and res.status_code < 300):
+    res = res.json() 
+
+    # check for directory and craete it if it doesnt exist
+    if (not os.path.isdir(MEDIA_DIR)):
+      os.mkdir(MEDIA_DIR)
+  else:
+    print(res.status_code)
+    print(res.json()['message'])
+    return
+  
   for item in res: 
     imgURL = item.get("gifUrl")
     if imgURL:
@@ -42,7 +54,7 @@ def fetchGifs():
           f.write(image.content)
       else:
         print("Cant find file " + imgURL)
-
+    
 # fetchGifs()
 
 
@@ -56,6 +68,15 @@ def addRequires():
       jsonObj = json.dumps(img_obj, indent = 2)
       f2.write(jsonObj)
 
-addRequires()
+# addRequires()
        
-
+ARGS = ['--d', '-download',]
+if __name__ == "__main__":
+  args = sys.argv[1:]
+  for arg in args:
+    if arg in ARGS: 
+      if (arg == "--d" or arg == "-donwload"):
+        fetchGifs()
+    else:
+      print(f"Invalid Argument, valid options: {', '.join(ARGS)}")
+  
