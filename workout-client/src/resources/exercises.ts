@@ -1337,7 +1337,7 @@ export class ExerciseImages {
     if (id in this.exercises){
       return this.exercises[id];
     }
-    throw new Error("Exercise ID does not exist");
+    throw new Error("Exercise ID does not exist: " + id);
   }
   
 }
