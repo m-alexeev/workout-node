@@ -1,17 +1,17 @@
 import { Realm } from "@realm/react";
 import Exercise from "./exercise";
 
-class BodyPart extends Realm.Object<BodyPart>{
+class BodyPart extends Realm.Object<BodyPart> {
   name!: string;
-  exercises!: Realm.List<Exercise>
+  exercises!: Realm.List<Exercise>;
 
   static schema = {
-    name: 'BodyPart',
+    name: "BodyPart",
     properties: {
-      name: {type: 'string', indexed: true},
+      name: { type: "string", indexed: true },
       exercises: "Exercise[]",
-    }
-  }
+    },
+  };
 }
 
 export default BodyPart;
