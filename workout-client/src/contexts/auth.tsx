@@ -1,75 +1,83 @@
-import axios from "axios";
-import * as SecureStore from "expo-secure-store";
-import {
-  createContext,
-  FC,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import {LocalAuthType, LocalUser } from "../types/auth";
-
-const USER_KEY = "user";
+import { createContext, FC, ReactNode, useContext, useEffect, useState } from "react";
+import { LocalAuthType, UserCredentials } from "../types/contexts";
+import { auth } from "../../firebase";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, User, UserInfo } from "firebase/auth";
 
 interface AuthProps {
   authState?: LocalAuthType;
-  onRegister?: (credentials: LocalUser) => Promise<any>;
-  ResetUserTemp?: () => Promise<void>;
+  onRegister?: (credentials: UserCredentials) => Promise<any>;
+  onSignIn?: (credentials: UserCredentials) => Promise<any>;
+  onSignOut?: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthProps>({});
-
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
-export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
+const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   const [authState, setAuthState] = useState<LocalAuthType>({
     user: null,
     isLoading: false,
     isRehydrating: false,
   });
 
+  const onAuthStateChanged = (user: User | null): any => {
+    if (user) {
+      setAuthState({ ...authState, user: user, isRehydrating: false });
+    }else{
+      setAuthState({...authState, user: null, isRehydrating: false});
+    }
+  };
+
   useEffect(() => {
-    const loadUser = async () => {
-      setAuthState({ ...authState, isRehydrating: true });
-      const user = await SecureStore.getItemAsync(USER_KEY);
-      setAuthState({ ...authState, isRehydrating: false });
-
-      if (user) {
-        const decodedUser = JSON.parse(user);
-        setAuthState({ ...authState, user: decodedUser });
-      }
-    };
-
-    loadUser();
+    setAuthState({ ...authState, isRehydrating: true });
+    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
   }, []);
 
-  const ResetUserTemp = async() =>  {
-   await SecureStore.deleteItemAsync("user");
-    setAuthState({...authState, user: null});
-  }
-
-  const LocalRegister = async (credentials: LocalUser) => {
+  const Register = async (user: UserCredentials) => {
     try {
       setAuthState({ ...authState, isLoading: true });
-      await SecureStore.setItemAsync(USER_KEY, JSON.stringify(credentials));
-      setAuthState({ ...authState, isLoading: false, user: credentials });
+      // create user with Creds
+      const firebaseUser = (await createUserWithEmailAndPassword(auth, user.email, user.password)).user;
+      setAuthState({ ...authState, isLoading: false, user: firebaseUser });
     } catch (err: any) {
       return { error: true, message: err };
     }
   };
 
+  const SignIn = async (user: UserCredentials) => {
+    try {
+      setAuthState({...authState, isLoading: true});
+      const firebaseUser = (await signInWithEmailAndPassword(auth, user.email, user.password)).user;
+      setAuthState({...authState, isLoading: false, user: firebaseUser});
+    }catch (err: any){
+      return { error: true, message: err };
+    }
+  }
+
+  const SignOut = async () => {
+    await auth.signOut();
+  };
+
   const value = {
-    onRegister: LocalRegister,
-    ResetUserTemp: ResetUserTemp,
     authState,
+    onRegister: Register,
+    onSignIn: SignIn,
+    onSignOut: SignOut,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+
+export const useAuth = () => {
+  const context = useContext(AuthContext) as AuthProps;
+  if (context === undefined) {
+    throw new Error("useAuth must be used within a AuthProvider");
+  }
+  return context;
+};
+
+export { AuthProvider };

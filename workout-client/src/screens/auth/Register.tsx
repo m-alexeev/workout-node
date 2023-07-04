@@ -9,8 +9,7 @@ import {
 } from "react-native-paper";
 import { AuthStackParamList } from "../../types/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { LocalUser } from "../../types/contexts";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { LocalUser, UserCredentials, UserRegisterCredentials } from "../../types/contexts";
 import { StatusBar } from "expo-status-bar";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Formik } from "formik";
@@ -32,26 +31,13 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
 
   const { onRegister } = useAuth();
   const theme = useTheme();
-  const initialValues: LocalUser = {
-    first_name: "",
-    last_name: "",
-    height: undefined,
-    weight: undefined,
+  const initialValues: UserRegisterCredentials = {
+    email: "",
+    password: "",
+    conf_password : "",
   };
 
-  const registerLocal = async (values: LocalUser) => {
-    // convert units if entered in Imperial
-    if (config.units === "imperial") {
-      if (values.height !== undefined) {
-        values.height = values.height / 3.281;
-      }
-      if (values.weight !== undefined) {
-        values.weight = values.weight / 2.205;
-      }
-    }
-    // Strip whitespaces
-    values.first_name = values.first_name.trim();
-    values.last_name = values.last_name.trim();
+  const registerLocal = async (values: UserRegisterCredentials) => {
 
     // redirection will happen automatically as soon as user is set in context
     await onRegister!(values);
@@ -99,58 +85,38 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
             <View style={styles.formTextField}>
               <View style={styles.formTextField}>
                 <TextInput
-                  label="First Name *"
-                  onChangeText={handleChange("first_name")}
-                  onBlur={handleBlur("first_name")}
-                  error={!!errors.first_name}
+                  label="Email"
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  error={!!errors.email}
                 />
-                {errors.first_name && touched.first_name && (
-                  <HelperText type="error">{errors.first_name}</HelperText>
+                {errors.email && touched.email && (
+                  <HelperText type="error">{errors.email}</HelperText>
                 )}
               </View>
               <View style={styles.formTextField}>
                 <TextInput
-                  label="Last Name *"
-                  onChangeText={handleChange("last_name")}
-                  onBlur={handleBlur("last_name")}
-                  error={!!errors.last_name}
+                  label="Password"
+                  onChangeText={handleChange("password")}
+                  onBlur={handleBlur("password")}
+                  secureTextEntry={true}
+                  error={!!errors.password}
                 />
-                {errors.last_name && touched.last_name && (
-                  <HelperText type="error">{errors.last_name}</HelperText>
+                {errors.password && touched.password && (
+                  <HelperText type="error">{errors.password}</HelperText>
                 )}
               </View>
               <View style={styles.formTextField}>
                 <TextInput
-                  label="Height"
-                  onChangeText={handleChange("height")}
-                  onBlur={handleBlur("height")}
+                  label="Confirm Password"
+                  onChangeText={handleChange("conf_password")}
                   keyboardType="phone-pad"
-                  error={!!errors.height}
-                  right={
-                    <TextInput.Affix
-                      text={config.units === "imperial" ? "ft" : "m"}
-                    />
-                  }
+                  error={!!errors.conf_password}
+                  secureTextEntry={true}
+                  onBlur={handleBlur("conf_password")}
                 />
-                {errors.height && touched.height && (
-                  <HelperText type="error">{errors.height}</HelperText>
-                )}
-              </View>
-              <View style={styles.formTextField}>
-                <TextInput
-                  label="Weight"
-                  onChangeText={handleChange("weight")}
-                  keyboardType="phone-pad"
-                  error={!!errors.weight}
-                  right={
-                    <TextInput.Affix
-                      text={config.units === "imperial" ? "lbs" : "kg"}
-                    />
-                  }
-                  onBlur={handleBlur("weight")}
-                />
-                {errors.weight && touched.weight && (
-                  <HelperText type="error">{errors.weight}</HelperText>
+                {errors.conf_password && touched.conf_password && (
+                  <HelperText type="error">{errors.conf_password}</HelperText>
                 )}
               </View>
             </View>
