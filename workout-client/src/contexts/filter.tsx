@@ -56,7 +56,7 @@ const FilterProvider: FC<FilterContextProps> = ({ children }) => {
 
 
   useEffect(()=> {
-    console.log(filters);
+    console.log("Filters: " + filters);
   },[filters]);
 
   return (

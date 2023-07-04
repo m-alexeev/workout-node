@@ -45,7 +45,7 @@ const ConfigProvider: FC<ConfigProps> = ({ children }) => {
 
 	useEffect(() => {
 		// save updated config to local storage
-		console.log(config);
+		console.log("config:" + config);
 		SecureStore.setItemAsync("config", JSON.stringify(config));
 	}, [config]);
 
