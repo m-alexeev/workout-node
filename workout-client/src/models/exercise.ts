@@ -20,6 +20,7 @@ class Exercise extends Realm.Object<Exercise> {
       equipment: "Equipment",
       targetMuscle: "TargetMuscle",
     },
+    primaryKey: '_id',
   };
 }
 

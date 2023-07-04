@@ -6,21 +6,24 @@ import { NavigationContainer } from "@react-navigation/native";
 import RootNavigator from "./src/screens/navigation/RootNavigator";
 import { ConfigProvider } from "./src/contexts/config";
 import { FilterProvider } from "./src/contexts/filter";
+import { RealmProvider } from "./src/contexts/realm";
 
 export default function App() {
   return (
     <PaperProvider theme={MaterialDarkTheme}>
-      <NavigationContainer>
-        <ThemeProvider>
-          <ConfigProvider>
-            <AuthProvider>
-              <FilterProvider>
-              <RootNavigator />
-              </FilterProvider>
-            </AuthProvider>
-          </ConfigProvider>
-        </ThemeProvider>
-      </NavigationContainer>
+      <RealmProvider>
+        <NavigationContainer>
+          <ThemeProvider>
+            <ConfigProvider>
+              <AuthProvider>
+                <FilterProvider>
+                  <RootNavigator />
+                </FilterProvider>
+              </AuthProvider>
+            </ConfigProvider>
+          </ThemeProvider>
+        </NavigationContainer>
+      </RealmProvider>
     </PaperProvider>
   );
 }
