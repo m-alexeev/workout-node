@@ -13,7 +13,8 @@ export type UserCredentials = {
   password: string;
 }
 
-export type UserRegisterCredentials = {
+
+export interface UserRegisterCredentials {
   email: string;
   password: string;
   conf_password: string;

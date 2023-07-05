@@ -1,88 +1,84 @@
 import React, { FC, useState } from "react";
-import {
-  Appbar,
-  Button,
-  HelperText,
-  Menu,
-  TextInput,
-  useTheme,
-} from "react-native-paper";
+import { Appbar, Button, HelperText, Menu, TextInput, Text } from "react-native-paper";
 import { AuthStackParamList } from "../../types/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { LocalUser, UserCredentials, UserRegisterCredentials } from "../../types/contexts";
+import { UserRegisterCredentials } from "../../types/contexts";
 import { StatusBar } from "expo-status-bar";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Formik } from "formik";
 import { useAuth } from "../../contexts/auth";
 import { RegisterSchema } from "./schemas";
-import { useConfig } from "../../contexts/config";
 import { Platform } from "react-native";
 import { ConfigurationDialog } from "../../components/configurationDialog";
+import { useTheme } from "../../contexts/theme";
 
 type RegisterProps = NativeStackScreenProps<AuthStackParamList, "Register">;
 
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 
 const Register: FC<RegisterProps> = ({ navigation }) => {
-  const { config } = useConfig();
+  const [apiError, setApiError] = useState("");
   const [menuVisible, setMenuVisible] = useState(false);
-
   const [dialog, setOpenDialog] = useState(false);
-
   const { onRegister } = useAuth();
-  const theme = useTheme();
+  const {theme} = useTheme();
   const initialValues: UserRegisterCredentials = {
     email: "",
     password: "",
-    conf_password : "",
+    conf_password: "",
   };
 
-  const registerLocal = async (values: UserRegisterCredentials) => {
-
+  const register = async (values: UserRegisterCredentials) => {
     // redirection will happen automatically as soon as user is set in context
-    await onRegister!(values);
+    const errors = await onRegister!(values);
+    if (errors){
+      setApiError(errors.message);
+    }else{
+      // Redirect to Success page
+      navigation.replace("Success");
+    }
   };
 
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
 
   return (
-    <View
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
-    >
-      <StatusBar style={theme.dark ? "light" : "dark"}></StatusBar>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <StatusBar style={theme.mode === "dark" ? 'light' : 'dark'}></StatusBar>
       <Appbar.Header>
         <Appbar.Content title={"Create Profile"}></Appbar.Content>
 
         <Menu
           visible={menuVisible}
           onDismiss={closeMenu}
-          anchor={
-            <Appbar.Action icon={MORE_ICON} onPress={openMenu}></Appbar.Action>
-          }
+          anchor={<Appbar.Action icon={MORE_ICON} onPress={openMenu}></Appbar.Action>}
         >
-          <Menu.Item onPress={() => {setOpenDialog(true)}} leadingIcon="cog" title="Configure" />
+          <Menu.Item
+            onPress={() => {
+              setOpenDialog(true);
+            }}
+            leadingIcon="cog"
+            title="Configure"
+          />
         </Menu>
       </Appbar.Header>
 
-      <ConfigurationDialog
-        show={dialog}
-        hideDialog={() => setOpenDialog(false)}
-      ></ConfigurationDialog>
+      <ConfigurationDialog show={dialog} hideDialog={() => setOpenDialog(false)}></ConfigurationDialog>
 
       <Formik
         initialValues={initialValues}
         validationSchema={RegisterSchema}
         validateOnChange={false}
         validateOnBlur={true}
-        onSubmit={async (values, { resetForm }) => {
-          await registerLocal(values);
+        onSubmit={async (values, {resetForm}) => {
+          await register(values);
           resetForm();
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, errors, touched }) => (
           <View style={styles.formContainer}>
             <View style={styles.formTextField}>
+            <Text style={{color: theme.error}}>{apiError}</Text>
               <View style={styles.formTextField}>
                 <TextInput
                   label="Email"
@@ -90,9 +86,7 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
                   onBlur={handleBlur("email")}
                   error={!!errors.email}
                 />
-                {errors.email && touched.email && (
-                  <HelperText type="error">{errors.email}</HelperText>
-                )}
+                {errors.email && touched.email && <HelperText type="error">{errors.email}</HelperText>}
               </View>
               <View style={styles.formTextField}>
                 <TextInput
@@ -102,15 +96,12 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
                   secureTextEntry={true}
                   error={!!errors.password}
                 />
-                {errors.password && touched.password && (
-                  <HelperText type="error">{errors.password}</HelperText>
-                )}
+                {errors.password && touched.password && <HelperText type="error">{errors.password}</HelperText>}
               </View>
               <View style={styles.formTextField}>
                 <TextInput
                   label="Confirm Password"
                   onChangeText={handleChange("conf_password")}
-                  keyboardType="phone-pad"
                   error={!!errors.conf_password}
                   secureTextEntry={true}
                   onBlur={handleBlur("conf_password")}
@@ -120,15 +111,13 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
                 )}
               </View>
             </View>
-
-            <Button
-              mode="contained"
-              onPress={
-                handleSubmit as unknown as (e: GestureResponderEvent) => void
-              }
-            >
+            <Button mode="contained" onPress={handleSubmit as unknown as (e: GestureResponderEvent) => void}>
               Create Profile
             </Button>
+            <View style={styles.linkContainer}>
+              <Text>Don't have an account?</Text>
+              <Button onPress={() => navigation.navigate("Login")}>Login</Button>
+            </View>
           </View>
         )}
       </Formik>
@@ -150,10 +139,10 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     paddingHorizontal: 30,
-    flex:1,
-    width:"100%",
-    justifyContent:"center",
-    alignSelf: "center"
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+    alignSelf: "center",
   },
   formTextField: {
     marginVertical: 10,
@@ -162,6 +151,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginTop: 10,
     justifyContent: "center",
+    alignItems: 'center',
   },
   linkStyle: {
     marginLeft: 5,

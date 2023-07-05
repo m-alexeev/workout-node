@@ -44,7 +44,7 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
       const firebaseUser = (await createUserWithEmailAndPassword(auth, user.email, user.password)).user;
       setAuthState({ ...authState, isLoading: false, user: firebaseUser });
     } catch (err: any) {
-      return { error: true, message: err };
+      return { error: true, message: err.message };
     }
   };
 
@@ -54,7 +54,7 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
       const firebaseUser = (await signInWithEmailAndPassword(auth, user.email, user.password)).user;
       setAuthState({...authState, isLoading: false, user: firebaseUser});
     }catch (err: any){
-      return { error: true, message: err };
+      return { error: true, message: err.message };
     }
   }
 
