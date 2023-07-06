@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, initializeAuth, reactNativeLocalPersistence } from "firebase/auth";
+import { getAuth, initializeAuth } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
   FIREBASE_DOMAIN,
@@ -32,8 +33,24 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
+const myReactNativeLocalPersistence =
+  getReactNativePersistence({
+    getItem(...args) {
+      // Called inline to avoid deprecation warnings on startup.
+      return AsyncStorage.getItem(...args);
+    },
+    setItem(...args) {
+      // Called inline to avoid deprecation warnings on startup.
+      return AsyncStorage.setItem(...args);
+    },
+    removeItem(...args) {
+      // Called inline to avoid deprecation warnings on startup.
+      return AsyncStorage.removeItem(...args);
+    },
+  });
+
 // keep data persistence between reloads
-initializeAuth(app, { persistence: reactNativeLocalPersistence });
+initializeAuth(app, { persistence: myReactNativeLocalPersistence });
 const auth = getAuth(app);
 const db = getFirestore(app);
 

@@ -11,7 +11,7 @@ import {
   CustomLightTheme,
   IThemeInterface,
 } from "../theme/colors";
-import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage/";
 
 export interface IThemeContextInterface {
   theme: IThemeInterface;
@@ -30,7 +30,7 @@ const ThemeProvider: FC<ThemeProps> = ({ children }) => {
   const [isLoadingTheme, setIsLoadingTheme] = useState(true);
 
   const getSavedTheme = async () => {
-    const themeMode = await SecureStore.getItemAsync("theme");
+    const themeMode = await AsyncStorage.getItem("theme");
     if (themeMode !== null) {
       themeMode === "light"
         ? setTheme(CustomLightTheme)
@@ -43,11 +43,11 @@ const ThemeProvider: FC<ThemeProps> = ({ children }) => {
     getSavedTheme();
   }, []);
 
-  const updateTheme = (currentThemeMode: "light" | "dark") => {
+  const updateTheme = async (currentThemeMode: "light" | "dark") => {
     const newTheme =
       currentThemeMode === "light" ? CustomLightTheme : CustomLightTheme;
     setTheme(newTheme);
-    SecureStore.setItemAsync("theme", newTheme.mode ? "dark" : "light");
+    await AsyncStorage.setItem("theme", newTheme.mode ? "dark" : "light");
   };
 
   return (

@@ -6,7 +6,7 @@ import React, {
   useState,
   useContext,
 } from "react";
-import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LanguageType, UnitType } from "../types/contexts";
 
 type ConfigType = {
@@ -31,7 +31,7 @@ const ConfigProvider: FC<ConfigProps> = ({ children }) => {
 
 
   const getSavedConfig = async () => {
-    const configJson = await SecureStore.getItemAsync("config");
+    const configJson = await AsyncStorage.getItem("config");
     let config = {};
     if (configJson){
         config = JSON.parse(configJson);
@@ -45,8 +45,7 @@ const ConfigProvider: FC<ConfigProps> = ({ children }) => {
 
 	useEffect(() => {
 		// save updated config to local storage
-		console.log(config);
-		SecureStore.setItemAsync("config", JSON.stringify(config));
+		AsyncStorage.setItem("config", JSON.stringify(config));
 	}, [config]);
 
 	const updateLanguage = (language: LanguageType) => {
