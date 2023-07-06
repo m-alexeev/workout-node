@@ -9,12 +9,13 @@ import { StatusBar } from "expo-status-bar";
 import { Formik } from "formik";
 import { LoginSchema } from "./schemas";
 import { useTheme } from "../../contexts/theme";
+import { auth } from "../../../firebase";
 
 type LoginProps = NativeStackScreenProps<AuthStackParamList, "Login">;
 
 const Login: FC<LoginProps> = ({ navigation }) => {
   const [apiError, setApiError] = useState("");
-  const { onSignIn } = useAuth();
+  const { onSignIn, authState } = useAuth();
   const {theme} = useTheme();
   const initialValues: UserCredentials = {
     email: "",
@@ -72,7 +73,7 @@ const Login: FC<LoginProps> = ({ navigation }) => {
             </Button>
             <View style={styles.linkContainer}>
               <Text >Don't have an account?</Text>
-              <Button onPress={() => navigation.navigate("Register")}>Register</Button>
+              <Button loading={authState?.isLoading} onPress={() => navigation.navigate("Register")}>Register</Button>
             </View>
           </View>
         )}

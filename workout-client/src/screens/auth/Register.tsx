@@ -20,8 +20,8 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
   const [apiError, setApiError] = useState("");
   const [menuVisible, setMenuVisible] = useState(false);
   const [dialog, setOpenDialog] = useState(false);
-  const { onRegister } = useAuth();
-  const {theme} = useTheme();
+  const { onRegister, authState } = useAuth();
+  const { theme } = useTheme();
   const initialValues: UserRegisterCredentials = {
     email: "",
     password: "",
@@ -31,9 +31,9 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
   const register = async (values: UserRegisterCredentials) => {
     // redirection will happen automatically as soon as user is set in context
     const errors = await onRegister!(values);
-    if (errors){
+    if (errors) {
       setApiError(errors.message);
-    }else{
+    } else {
       // Redirect to Success page
       navigation.replace("Success");
     }
@@ -44,7 +44,7 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <StatusBar style={theme.mode === "dark" ? 'light' : 'dark'}></StatusBar>
+      <StatusBar style={theme.mode === "dark" ? "light" : "dark"}></StatusBar>
       <Appbar.Header>
         <Appbar.Content title={"Create Profile"}></Appbar.Content>
 
@@ -70,7 +70,7 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
         validationSchema={RegisterSchema}
         validateOnChange={false}
         validateOnBlur={true}
-        onSubmit={async (values, {resetForm}) => {
+        onSubmit={async (values, { resetForm }) => {
           await register(values);
           resetForm();
         }}
@@ -78,7 +78,7 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
         {({ handleChange, handleBlur, handleSubmit, errors, touched }) => (
           <View style={styles.formContainer}>
             <View style={styles.formTextField}>
-            <Text style={{color: theme.error}}>{apiError}</Text>
+              <Text style={{ color: theme.error }}>{apiError}</Text>
               <View style={styles.formTextField}>
                 <TextInput
                   label="Email"
@@ -116,7 +116,9 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
             </Button>
             <View style={styles.linkContainer}>
               <Text>Don't have an account?</Text>
-              <Button onPress={() => navigation.navigate("Login")}>Login</Button>
+              <Button loading={authState?.isLoading} onPress={() => navigation.navigate("Login")}>
+                Login
+              </Button>
             </View>
           </View>
         )}
@@ -151,7 +153,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginTop: 10,
     justifyContent: "center",
-    alignItems: 'center',
+    alignItems: "center",
   },
   linkStyle: {
     marginLeft: 5,
