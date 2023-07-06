@@ -4,7 +4,7 @@ import { RootStackParamList } from "../../types/navigation";
 import TabNavigator from "./TabNavigator";
 import SplashScreen from "../SplashScreen";
 import AuthNavigator from "./AuthNavigator";
-import {useFonts} from "expo-font";
+import { View, Text } from "react-native";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -12,11 +12,11 @@ const RootNavigator = () => {
   const { authState } = useAuth();
 
   if (authState?.isRehydrating) {
-    return <SplashScreen/>;
+    return <SplashScreen />;
   }
 
   return (
-    <RootStack.Navigator screenOptions={{headerShown:false}}>
+    <RootStack.Navigator screenOptions={{ headerShown: false }}>
       {authState?.user === null ? (
         <RootStack.Screen name="AuthRoute" component={AuthNavigator}></RootStack.Screen>
       ) : (

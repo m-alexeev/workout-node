@@ -1,3 +1,4 @@
+import { UserInfo } from "firebase/auth";
 import { bodyPartType, equipmentType, targetType } from "./exercises";
 
 export interface IFilterInterface {
@@ -7,6 +8,18 @@ export interface IFilterInterface {
   name: string;
 };
 
+export type UserCredentials = {
+  email: string;
+  password: string;
+}
+
+
+export interface UserRegisterCredentials {
+  email: string;
+  password: string;
+  conf_password: string;
+}
+
 export type LocalUser = {
   first_name: string;
   last_name: string;
@@ -15,7 +28,7 @@ export type LocalUser = {
 };
 
 export type LocalAuthType = {
-  user: LocalUser | null;
+  user: UserInfo | null;
   isLoading: boolean;
   isRehydrating: boolean;
 };

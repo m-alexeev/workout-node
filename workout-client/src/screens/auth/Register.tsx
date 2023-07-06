@@ -1,88 +1,69 @@
 import React, { FC, useState } from "react";
-import {
-  Appbar,
-  Button,
-  HelperText,
-  Menu,
-  TextInput,
-  useTheme,
-} from "react-native-paper";
+import { Appbar, Button, HelperText, Menu, TextInput, Text } from "react-native-paper";
 import { AuthStackParamList } from "../../types/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { LocalUser } from "../../types/contexts";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { UserRegisterCredentials } from "../../types/contexts";
 import { StatusBar } from "expo-status-bar";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Formik } from "formik";
 import { useAuth } from "../../contexts/auth";
 import { RegisterSchema } from "./schemas";
-import { useConfig } from "../../contexts/config";
 import { Platform } from "react-native";
 import { ConfigurationDialog } from "../../components/configurationDialog";
+import { useTheme } from "../../contexts/theme";
 
 type RegisterProps = NativeStackScreenProps<AuthStackParamList, "Register">;
 
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 
 const Register: FC<RegisterProps> = ({ navigation }) => {
-  const { config } = useConfig();
+  const [apiError, setApiError] = useState("");
   const [menuVisible, setMenuVisible] = useState(false);
-
   const [dialog, setOpenDialog] = useState(false);
-
-  const { onRegister } = useAuth();
-  const theme = useTheme();
-  const initialValues: LocalUser = {
-    first_name: "",
-    last_name: "",
-    height: undefined,
-    weight: undefined,
+  const { onRegister, authState } = useAuth();
+  const { theme } = useTheme();
+  const initialValues: UserRegisterCredentials = {
+    email: "",
+    password: "",
+    conf_password: "",
   };
 
-  const registerLocal = async (values: LocalUser) => {
-    // convert units if entered in Imperial
-    if (config.units === "imperial") {
-      if (values.height !== undefined) {
-        values.height = values.height / 3.281;
-      }
-      if (values.weight !== undefined) {
-        values.weight = values.weight / 2.205;
-      }
-    }
-    // Strip whitespaces
-    values.first_name = values.first_name.trim();
-    values.last_name = values.last_name.trim();
-
+  const register = async (values: UserRegisterCredentials) => {
     // redirection will happen automatically as soon as user is set in context
-    await onRegister!(values);
+    const errors = await onRegister!(values);
+    if (errors) {
+      setApiError(errors.message);
+    } else {
+      // Redirect to Success page
+      navigation.replace("Success");
+    }
   };
 
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
 
   return (
-    <View
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
-    >
-      <StatusBar style={theme.dark ? "light" : "dark"}></StatusBar>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <StatusBar style={theme.mode === "dark" ? "light" : "dark"}></StatusBar>
       <Appbar.Header>
         <Appbar.Content title={"Create Profile"}></Appbar.Content>
 
         <Menu
           visible={menuVisible}
           onDismiss={closeMenu}
-          anchor={
-            <Appbar.Action icon={MORE_ICON} onPress={openMenu}></Appbar.Action>
-          }
+          anchor={<Appbar.Action icon={MORE_ICON} onPress={openMenu}></Appbar.Action>}
         >
-          <Menu.Item onPress={() => {setOpenDialog(true)}} leadingIcon="cog" title="Configure" />
+          <Menu.Item
+            onPress={() => {
+              setOpenDialog(true);
+            }}
+            leadingIcon="cog"
+            title="Configure"
+          />
         </Menu>
       </Appbar.Header>
 
-      <ConfigurationDialog
-        show={dialog}
-        hideDialog={() => setOpenDialog(false)}
-      ></ConfigurationDialog>
+      <ConfigurationDialog show={dialog} hideDialog={() => setOpenDialog(false)}></ConfigurationDialog>
 
       <Formik
         initialValues={initialValues}
@@ -90,79 +71,55 @@ const Register: FC<RegisterProps> = ({ navigation }) => {
         validateOnChange={false}
         validateOnBlur={true}
         onSubmit={async (values, { resetForm }) => {
-          await registerLocal(values);
+          await register(values);
           resetForm();
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, errors, touched }) => (
           <View style={styles.formContainer}>
             <View style={styles.formTextField}>
+              <Text style={{ color: theme.error }}>{apiError}</Text>
               <View style={styles.formTextField}>
                 <TextInput
-                  label="First Name *"
-                  onChangeText={handleChange("first_name")}
-                  onBlur={handleBlur("first_name")}
-                  error={!!errors.first_name}
+                  label="Email"
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  error={!!errors.email}
                 />
-                {errors.first_name && touched.first_name && (
-                  <HelperText type="error">{errors.first_name}</HelperText>
-                )}
+                {errors.email && touched.email && <HelperText type="error">{errors.email}</HelperText>}
               </View>
               <View style={styles.formTextField}>
                 <TextInput
-                  label="Last Name *"
-                  onChangeText={handleChange("last_name")}
-                  onBlur={handleBlur("last_name")}
-                  error={!!errors.last_name}
+                  label="Password"
+                  onChangeText={handleChange("password")}
+                  onBlur={handleBlur("password")}
+                  secureTextEntry={true}
+                  error={!!errors.password}
                 />
-                {errors.last_name && touched.last_name && (
-                  <HelperText type="error">{errors.last_name}</HelperText>
-                )}
+                {errors.password && touched.password && <HelperText type="error">{errors.password}</HelperText>}
               </View>
               <View style={styles.formTextField}>
                 <TextInput
-                  label="Height"
-                  onChangeText={handleChange("height")}
-                  onBlur={handleBlur("height")}
-                  keyboardType="phone-pad"
-                  error={!!errors.height}
-                  right={
-                    <TextInput.Affix
-                      text={config.units === "imperial" ? "ft" : "m"}
-                    />
-                  }
+                  label="Confirm Password"
+                  onChangeText={handleChange("conf_password")}
+                  error={!!errors.conf_password}
+                  secureTextEntry={true}
+                  onBlur={handleBlur("conf_password")}
                 />
-                {errors.height && touched.height && (
-                  <HelperText type="error">{errors.height}</HelperText>
-                )}
-              </View>
-              <View style={styles.formTextField}>
-                <TextInput
-                  label="Weight"
-                  onChangeText={handleChange("weight")}
-                  keyboardType="phone-pad"
-                  error={!!errors.weight}
-                  right={
-                    <TextInput.Affix
-                      text={config.units === "imperial" ? "lbs" : "kg"}
-                    />
-                  }
-                  onBlur={handleBlur("weight")}
-                />
-                {errors.weight && touched.weight && (
-                  <HelperText type="error">{errors.weight}</HelperText>
+                {errors.conf_password && touched.conf_password && (
+                  <HelperText type="error">{errors.conf_password}</HelperText>
                 )}
               </View>
             </View>
-
-            <Button
-              mode="contained"
-              onPress={
-                handleSubmit as unknown as (e: GestureResponderEvent) => void
-              }
-            >
+            <Button mode="contained" onPress={handleSubmit as unknown as (e: GestureResponderEvent) => void}>
               Create Profile
             </Button>
+            <View style={styles.linkContainer}>
+              <Text>Don't have an account?</Text>
+              <Button loading={authState?.isLoading} onPress={() => navigation.navigate("Login")}>
+                Login
+              </Button>
+            </View>
           </View>
         )}
       </Formik>
@@ -184,10 +141,10 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     paddingHorizontal: 30,
-    flex:1,
-    width:"100%",
-    justifyContent:"center",
-    alignSelf: "center"
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+    alignSelf: "center",
   },
   formTextField: {
     marginVertical: 10,
@@ -196,6 +153,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginTop: 10,
     justifyContent: "center",
+    alignItems: "center",
   },
   linkStyle: {
     marginLeft: 5,

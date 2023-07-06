@@ -15,7 +15,7 @@ export default function App() {
           <ConfigProvider>
             <AuthProvider>
               <FilterProvider>
-              <RootNavigator />
+                <RootNavigator />
               </FilterProvider>
             </AuthProvider>
           </ConfigProvider>
